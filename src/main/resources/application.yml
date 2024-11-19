@@ -1,4 +1,77 @@
 spring:
+  profiles:
+    active: local
+    group:
+      local: local, common, secret
+      blue: blue, common, secret
+      green: green, common, secret
+
+server:
+  env: blue
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: local
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          kakao:
+#            redirectUri: https://localhost:8080/api/auth/kakao
+
+server:
+  port: 8080
+  serverAddress: localhost
+
+serverName: local_server
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: blue
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          kakao:
+#            redirectUri: https://3.39.14.152/api/auth/kakao
+
+server:
+  port: 8080
+  serverAddress: 3.39.14.152
+
+serverName: blue_server
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: green
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          kakao:
+#            redirectUri: https://3.39.14.152/api/auth/kakao
+
+server:
+  port: 8081
+  serverAddress: 3.39.14.152
+
+serverName: green_server
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: common
   jackson:
     serialization:
       fail-on-empty-beans: false
