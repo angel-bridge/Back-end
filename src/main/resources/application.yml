@@ -15,12 +15,12 @@ spring:
   config:
     activate:
       on-profile: local
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          kakao:
-#            redirectUri: https://localhost:8080/api/auth/kakao
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: http://localhost:8080/api/auth/callback/kakao
 
 server:
   port: 8080
@@ -34,12 +34,12 @@ spring:
   config:
     activate:
       on-profile: blue
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          kakao:
-#            redirectUri: https://3.39.14.152/api/auth/kakao
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: http://3.39.14.152/api/auth/callback/kakao
 
 server:
   port: 8080
@@ -53,12 +53,12 @@ spring:
   config:
     activate:
       on-profile: green
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          kakao:
-#            redirectUri: https://3.39.14.152/api/auth/kakao
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: http://3.39.14.152/api/auth/callback/kakao
 
 server:
   port: 8081
@@ -75,6 +75,23 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            client-name: kakao
+            scope: profile_nickname
+
+        provider:
+          kakao:
+            authorizationUri: https://kauth.kakao.com/oauth/authorize
+            tokenUri: https://kauth.kakao.com/oauth/token
+            userInfoUri: https://kapi.kakao.com/v2/user/me
+            userNameAttribute: id
 
 logging.level:
   org.hibernate.SQL: debug
