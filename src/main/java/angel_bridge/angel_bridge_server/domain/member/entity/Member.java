@@ -22,9 +22,10 @@ public class Member extends BaseEntity {
     @Column(name = "member_id", nullable = false)
     private Long id;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 20)
     private String name;
 
+    // 카카오에서 넘어오는 이름
     @Column(length = 50, nullable = false)
     private String nickname;
 
@@ -42,17 +43,21 @@ public class Member extends BaseEntity {
     @Column(nullable = false, length = 8)
     private MemberStatus status;
 
+    @Column
+    private String role;
+
     @Column(name = "inactive_date")
     private LocalDateTime inactiveDate;
 
     @Builder
-    public Member(String name, String nickname, String email, String phoneNumber, String loginType, String status, LocalDateTime inactiveDate) {
+    public Member(String name, String nickname, String email, String phoneNumber, String loginType, String status, String role, LocalDateTime inactiveDate) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.loginType = (loginType == null || loginType.isEmpty()) ? LoginType.KAKAO : LoginType.valueOf(loginType);
         this.status = (status == null || status.isEmpty()) ? MemberStatus.ACTIVE : MemberStatus.valueOf(status);
+        this.role = role;
         this.inactiveDate = inactiveDate;
     }
 }
