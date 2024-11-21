@@ -46,11 +46,15 @@ public class Member extends BaseEntity {
     @Column
     private String role;
 
+    // 카카오에서 가져온 사용자 특정할 일종의 아이디 요소
+    @Column(name = "oauth_name")
+    private String oauthname;
+
     @Column(name = "inactive_date")
     private LocalDateTime inactiveDate;
 
     @Builder
-    public Member(String name, String nickname, String email, String phoneNumber, String loginType, String status, String role, LocalDateTime inactiveDate) {
+    public Member(String name, String nickname, String email, String phoneNumber, String loginType, String status, String role, String oauthname, LocalDateTime inactiveDate) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
@@ -58,6 +62,7 @@ public class Member extends BaseEntity {
         this.loginType = (loginType == null || loginType.isEmpty()) ? LoginType.KAKAO : LoginType.valueOf(loginType);
         this.status = (status == null || status.isEmpty()) ? MemberStatus.ACTIVE : MemberStatus.valueOf(status);
         this.role = role;
+        this.oauthname = oauthname;
         this.inactiveDate = inactiveDate;
     }
 }
