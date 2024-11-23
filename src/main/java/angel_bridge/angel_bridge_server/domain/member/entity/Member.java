@@ -53,6 +53,11 @@ public class Member extends BaseEntity {
     @Column(name = "inactive_date")
     private LocalDateTime inactiveDate;
 
+    public void update(String nickname) {
+
+        this.nickname = nickname;
+    }
+
     @Builder
     public Member(String name, String nickname, String email, String phoneNumber, String loginType, String status, String role, String oauthname, LocalDateTime inactiveDate) {
         this.name = name;
