@@ -59,7 +59,7 @@ public class AuthService {
 
         Boolean isExist = refreshRepository.existsByRefresh(refreshToken);
         if (!isExist) {
-            throw new ApplicationException(INVALID_REFRESH_TOKEN);
+            throw new ApplicationException(NOT_FOUND_REFRESH_TOKEN);
         }
     }
 
@@ -95,7 +95,7 @@ public class AuthService {
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(1000 * 60 * 60 * 24 * 14);
+        cookie.setMaxAge(60 * 60 * 24 * 14);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         // cookie.setSecure(true);
@@ -109,7 +109,7 @@ public class AuthService {
     @Transactional
     public void deleteAndSaveNewRefreshToken(String oauthname, String newRefresh, Long expiredMs) {
 
-        refreshRepository.deleteByRefresh(newRefresh);
+        refreshRepository.deleteByOauthname(oauthname);
 
         addRefreshEntity(oauthname, newRefresh, expiredMs);
     }
