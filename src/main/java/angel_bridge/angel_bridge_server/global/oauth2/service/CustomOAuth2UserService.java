@@ -50,6 +50,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (existData == null) {
 
             Member member = Member.builder()
+                    .oauthname(oauthname)
                     .nickname(oAuth2Response.getName())
                     .role("ROLE_USER")
                     .build();
