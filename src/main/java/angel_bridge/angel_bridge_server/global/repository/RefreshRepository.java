@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface RefreshRepository extends JpaRepository<Refresh, String> {
 
-    Boolean existsByOauthname(String oauthname);
+    Boolean existsByRefresh(String refresh);
 
     @Transactional
     void deleteByRefresh(String refresh);

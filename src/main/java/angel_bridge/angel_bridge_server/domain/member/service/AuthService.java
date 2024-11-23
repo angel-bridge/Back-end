@@ -57,7 +57,7 @@ public class AuthService {
             throw new ApplicationException(INVALID_REFRESH_TOKEN);
         }
 
-        Boolean isExist = refreshRepository.existsByOauthname(refreshToken);
+        Boolean isExist = refreshRepository.existsByRefresh(refreshToken);
         if (!isExist) {
             throw new ApplicationException(INVALID_REFRESH_TOKEN);
         }
