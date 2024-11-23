@@ -16,8 +16,8 @@ public class Refresh {
     @Column(name = "refresh_id", nullable = false)
     private Long id;
 
-    @Column(length = 20, nullable = false)
-    private String nickname;
+    @Column(nullable = false)
+    private String oauthname;
 
     @Column(nullable = false)
     private String refresh;
@@ -26,8 +26,8 @@ public class Refresh {
     private String expiration;
 
     @Builder
-    public Refresh(String nickname, String refresh, String expiration) {
-        this.nickname = nickname;
+    public Refresh(String oauthname, String refresh, String expiration) {
+        this.oauthname = oauthname;
         this.refresh = refresh;
         this.expiration = expiration;
     }

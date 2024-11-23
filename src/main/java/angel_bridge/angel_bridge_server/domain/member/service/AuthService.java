@@ -10,8 +10,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,7 +57,7 @@ public class AuthService {
             throw new ApplicationException(INVALID_REFRESH_TOKEN);
         }
 
-        Boolean isExist = refreshRepository.existsByRefresh(refreshToken);
+        Boolean isExist = refreshRepository.existsByOauthname(refreshToken);
         if (!isExist) {
             throw new ApplicationException(INVALID_REFRESH_TOKEN);
         }
@@ -70,9 +68,9 @@ public class AuthService {
      * **/
     public String reissueAccessToken(String refreshToken) {
 
-        String nickname = jwtUtil.getUsername(refreshToken);
+        String oauthname = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
-        return jwtUtil.createJwt("access", nickname, role, 1000L * 60 * 60 * 2);
+        return jwtUtil.createJwt("access", oauthname, role, 1000L * 60 * 60 * 2);
     }
 
     /**
@@ -81,15 +79,15 @@ public class AuthService {
     @Transactional
     public Cookie createRefreshTokenCookie(String refreshToken) {
 
-        String nickname = jwtUtil.getUsername(refreshToken);
+        String oauthname = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
-        String newRefresh = jwtUtil.createJwt("refresh", nickname, role, 1000L * 60 * 60 * 24 * 14);
+        String newRefresh = jwtUtil.createJwt("refresh", oauthname, role, 1000L * 60 * 60 * 24 * 14);
 
-        if (nickname == null) {
+        if (oauthname == null) {
             throw new ApplicationException(WRONG_TOKEN_EXCEPTION);
         }
 
-        deleteAndSaveNewRefreshToken(nickname, newRefresh, 1000L * 60 * 60 * 24 * 14);
+        deleteAndSaveNewRefreshToken(oauthname, newRefresh, 1000L * 60 * 60 * 24 * 14);
 
         return createCookie("refreshToken", newRefresh);
     }
@@ -109,23 +107,23 @@ public class AuthService {
      * 기존의 Refresh Token 삭제 후 새 Refresh Token 저장
      **/
     @Transactional
-    public void deleteAndSaveNewRefreshToken(String nickname, String newRefresh, Long expiredMs) {
+    public void deleteAndSaveNewRefreshToken(String oauthname, String newRefresh, Long expiredMs) {
 
         refreshRepository.deleteByRefresh(newRefresh);
 
-        addRefreshEntity(nickname, newRefresh, expiredMs);
+        addRefreshEntity(oauthname, newRefresh, expiredMs);
     }
 
     /**
      * 새로운 Refresh Token 저장하는 메서드
      **/
     @Transactional
-    public void addRefreshEntity(String nickname, String refresh, Long expiredMs) {
+    public void addRefreshEntity(String oauthname, String refresh, Long expiredMs) {
 
         Date expirationDate = new Date(System.currentTimeMillis() + expiredMs);
 
         Refresh refreshEntity = Refresh.builder()
-                .nickname(nickname)
+                .oauthname(oauthname)
                 .refresh(refresh)
                 .expiration(expirationDate.toString())
                 .build();
