@@ -40,3 +40,5 @@ secrets.yml
 .sts4-cache
 
 .idea
+.gradle/
+src/main/resources/application-secret.yml
