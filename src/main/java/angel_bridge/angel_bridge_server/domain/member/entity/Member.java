@@ -3,8 +3,10 @@ package angel_bridge.angel_bridge_server.domain.member.entity;
 import angel_bridge.angel_bridge_server.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE member SET deleted_at = NOW() where id = ?")
 public class Member extends BaseEntity {
 
     @Id
@@ -19,14 +22,13 @@ public class Member extends BaseEntity {
     @Column(name = "member_id", nullable = false)
     private Long id;
 
-    @Column(length = 20, nullable = false)
+    // 사용자 실명
+    @Column(length = 20)
     private String name;
 
+    // 카카오에서 넘어오는 이름
     @Column(length = 50, nullable = false)
     private String nickname;
-
-    @Column(name = "profile_image")
-    private String profileImage;
 
     @Column(length = 320)
     private String email;
@@ -36,13 +38,37 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "login_type", nullable = false, length = 8)
-    private LoginType loginType = LoginType.KAKAO;
+    private LoginType loginType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 8)
-    private MemberStatus status = MemberStatus.ACTIVE;
+    private MemberStatus status;
+
+    @Column
+    private String role;
+
+    // 카카오에서 가져온 사용자 특정할 일종의 아이디 요소
+    @Column(name = "oauth_name")
+    private String oauthname;
 
     @Column(name = "inactive_date")
     private LocalDateTime inactiveDate;
 
+    public void update(String nickname) {
+
+        this.nickname = nickname;
+    }
+
+    @Builder
+    public Member(String name, String nickname, String email, String phoneNumber, String loginType, String status, String role, String oauthname, LocalDateTime inactiveDate) {
+        this.name = name;
+        this.nickname = nickname;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.loginType = (loginType == null || loginType.isEmpty()) ? LoginType.KAKAO : LoginType.valueOf(loginType);
+        this.status = (status == null || status.isEmpty()) ? MemberStatus.ACTIVE : MemberStatus.valueOf(status);
+        this.role = role;
+        this.oauthname = oauthname;
+        this.inactiveDate = inactiveDate;
+    }
 }
