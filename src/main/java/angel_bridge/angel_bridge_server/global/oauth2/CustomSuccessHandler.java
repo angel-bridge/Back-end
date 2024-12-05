@@ -64,7 +64,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // TODO: 프론트 배포 시 수정 예정
         // 로그인 성공 시 이동 경로 지정
-        response.sendRedirect("http://3.39.14.152/env");
+        response.sendRedirect("http://localhost:3000/");
     }
 
     // 프론트에 전달할 방식 : 쿠키 방식
