@@ -42,4 +42,13 @@ public class BlogService {
 
         return AdminBlogResponseDto.from(updateBlog);
     }
+
+    // [DELETE] 어드민 블로그 썸네일 삭제
+    @Transactional
+    public void deleteBlog(Long blogId) {
+
+        Blog blog = findBlogById(blogId);
+
+        blogRepository.delete(blog);
+    }
 }

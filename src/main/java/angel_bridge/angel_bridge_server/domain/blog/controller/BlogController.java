@@ -31,4 +31,12 @@ public class BlogController {
 
         return new CommonResponse<>(blogService.updateBlog(request, blogId), "해당 블로그 썸네일 수정에 성공하였습니다.");
     }
+
+    @Operation(summary = "블로그 썸네일 삭제", description = "하나의 블로그 썸네일을 삭제하는 API")
+    @DeleteMapping("/{blogId}")
+    public CommonResponse<Void> deleteBlog(@PathVariable Long blogId) {
+
+        blogService.deleteBlog(blogId);
+        return new CommonResponse<>("해당 블로그 썸네일 삭제에 성공하였습니다.");
+    }
 }
