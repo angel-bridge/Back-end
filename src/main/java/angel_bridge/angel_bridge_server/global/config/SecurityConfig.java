@@ -93,7 +93,7 @@ public class SecurityConfig {
                         .requestMatchers("http://localhost:3001").permitAll()
 
                         // 임시
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 
                         .requestMatchers("/api/auth/reissue").permitAll()
                         .requestMatchers("/hc", "/env").permitAll()
