@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/admin/blog")
@@ -26,5 +23,12 @@ public class BlogController {
     public CommonResponse<AdminBlogResponseDto> createBlog(@Valid @RequestBody AdminBlogRequestDto request) {
 
         return new CommonResponse<>(blogService.createBlog(request), "하나의 블로그 썸네일 생성에 성공하였습니다.");
+    }
+
+    @Operation(summary = "블로그 썸네일 수정", description = "하나의 블로그 썸네일을 수정하는 API")
+    @PutMapping("/{blogId}")
+    public CommonResponse<AdminBlogResponseDto> updateBlog(@Valid @RequestBody AdminBlogRequestDto request, @PathVariable Long blogId) {
+
+        return new CommonResponse<>(blogService.updateBlog(request, blogId), "해당 블로그 썸네일 수정에 성공하였습니다.");
     }
 }

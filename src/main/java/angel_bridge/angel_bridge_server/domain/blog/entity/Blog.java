@@ -1,5 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.blog.entity;
 
+import angel_bridge.angel_bridge_server.domain.blog.dto.request.AdminBlogRequestDto;
 import angel_bridge.angel_bridge_server.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -31,6 +32,13 @@ public class Blog extends BaseEntity {
 
     @Column(name = "blog_date", nullable = false)
     private LocalDate blogDate;
+
+    public void update(AdminBlogRequestDto request) {
+        this.title = request.title();
+        this.blogLink = request.blogLink();
+        this.startText = request.text();
+        this.blogDate = request.blogDate();
+    }
 
     @Builder
     public Blog(String title, String blogLink, String startText, LocalDate blogDate) {
