@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,16 +18,28 @@ public class Education extends BaseEntity {
     @Column(name = "education_id", nullable = false)
     private Long id;
 
-    @Column(name = "program_preview_image")
-    private String programPreImage;
-
     @Column(name = "education_preview_image")
     private String educationPreImage;
 
-    @Column(name = "program_description")
-    private String programDescription;
+    @Column(name = "education_description")
+    private String educationDescription;
 
-    @Column(name = "creator_biography")
-    private String creatorBiography;
+    @Column(name = "education_title")
+    private String educationTitle;
+
+    @Column(name = "education_start_date")
+    private LocalDate educationStartDate;
+
+    @Column(name = "education_end_date")
+    private LocalDate educationEndDate;
+
+    @Column(name = "recruitment_end_date")
+    private LocalDate recruitmentEndDate;
+
+    @Column(name = "price")
+    private String price;
+
+    @Column(name = "recruitment_status")
+    private RecruitmentStatus recruitmentStatus;
 
 }
