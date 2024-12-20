@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE member SET deleted_at = NOW() where id = ?")
+@SQLDelete(sql = "UPDATE Member SET deleted_at = NOW() where member_id = ?")
 public class Member extends BaseEntity {
 
     @Id

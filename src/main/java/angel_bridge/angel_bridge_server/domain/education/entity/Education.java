@@ -7,12 +7,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDate;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE Education SET deleted_at = NOW() where education_id = ?")
 public class Education extends BaseEntity {
 
     @Id
