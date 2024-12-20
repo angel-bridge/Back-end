@@ -32,6 +32,10 @@ public class Banner extends BaseEntity {
     @Column(name = "is_post", nullable = false)
     private Boolean isPost;
 
+    public void changeIsPost() {
+        this.isPost = !this.isPost;
+    }
+
     public void update(BannerRequestDto request, String file) {
         this.imageUrl = file;
         this.name = request.name();

@@ -35,6 +35,13 @@ public class BannerController {
         return new CommonResponse<>(bannerService.updateBanner(request, file, bannerId), "해당 배너 이미지 수정에 성공하였습니다.");
     }
 
+    @Operation(summary = "배너 게시 여부 변경", description = "해당 배너 게시 여부를 변경하는 API")
+    @PatchMapping("/{bannerId}")
+    public CommonResponse<AdminBannerResponseDto> changeIsPost(@PathVariable Long bannerId) {
+
+        return new CommonResponse<>(bannerService.changeIsPost(bannerId), "해당 배너의 게시 여부를 변경하였습니다.");
+    }
+
     @Operation(summary = "배너 삭제", description = "하나의 배너를 삭제하는 API")
     @DeleteMapping("/{bannerId}")
     public CommonResponse<Void> deleteBanner(@PathVariable Long bannerId) {
