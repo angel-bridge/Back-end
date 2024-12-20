@@ -45,12 +45,14 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8081"));
-                        configuration.setAllowedOrigins(Collections.singletonList("http://3.39.14.152:8080"));
-                        configuration.setAllowedOrigins(Collections.singletonList("http://3.39.14.152:8081"));
-                        configuration.setAllowedMethods(Arrays.asList("*"));
+                        configuration.setAllowedOrigins(Arrays.asList(
+                                "http://localhost:3000",
+                                "http://localhost:8080",
+                                "http://localhost:8081",
+                                "http://3.39.14.152:8080",
+                                "http://3.39.14.152:8081"
+                        ));
+                        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
 
                         configuration.setAllowedMethods(Collections.singletonList("*"));
@@ -58,8 +60,7 @@ public class SecurityConfig {
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
                         configuration.setMaxAge(3600L);
 
-                        configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+                        configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
 
                         return configuration;
                     }

@@ -41,7 +41,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = auth.getAuthority();
 
         // 토큰 생성
-        String access = jwtUtil.createJwt("access", username, role, 1000L * 60 * 60 * 2);   // 2시간
+        String access = jwtUtil.createJwt("access", username, role, 1000L * 60 * 60 * 24 * 14);   // 2주
 
         // 테스트용 (삭제 예정)
         System.out.println("access = " + access);
