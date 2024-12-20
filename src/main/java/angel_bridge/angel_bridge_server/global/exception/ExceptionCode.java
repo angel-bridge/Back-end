@@ -43,7 +43,8 @@ public enum ExceptionCode {
     // 5000: Admin Error
     NOT_FOUND_BLOG_ID(HttpStatus.NOT_FOUND, 5001,"존재하지 않는 Blog 입니다."),
     IMAGE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 5002, "이미지 저장에 실패하였습니다."),
-    NOT_FOUND_EDUCATION_ID(HttpStatus.NOT_FOUND, 5003,"존재하지 않는 교육 프로그램입니다.");
+    NOT_FOUND_EDUCATION_ID(HttpStatus.NOT_FOUND, 5003,"존재하지 않는 교육 프로그램입니다."),
+    NOT_FOUND_BANNER_ID(HttpStatus.NOT_FOUND, 5004,"존재하지 않는 배너입니다.");
 
 
     // 6000: [임의] Error
