@@ -65,4 +65,18 @@ public class BannerService {
 
         return AdminBannerResponseDto.from(updateBanner);
     }
+
+    @Transactional
+    public void deleteBanner(Long bannerId) {
+
+        Banner banner = findBannerById(bannerId);
+
+        String image = banner.getImageUrl();
+
+        if (image != null && !image.isEmpty()) {
+            imageService.deleteImage(image);
+        }
+
+        bannerRepository.delete(banner);
+    }
 }
