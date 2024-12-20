@@ -33,4 +33,11 @@ public class AdminEducationController {
         return new CommonResponse<>(educationService.updateEducation(request, preImage, detailImage, educationId), "해당 교육프로그램 수정에 성공하였습니다.");
     }
 
+    @Operation(summary = "교육프로그램 삭제", description = "하나의 교육프로그램을 삭제하는 API")
+    @DeleteMapping("/{educationId}")
+    public CommonResponse<Void> deleteEducation(@PathVariable Long educationId) {
+
+        educationService.deleteEducation(educationId);
+        return new CommonResponse<>("해당 교육프로그램 삭제에 성공하였습니다.");
+    }
 }

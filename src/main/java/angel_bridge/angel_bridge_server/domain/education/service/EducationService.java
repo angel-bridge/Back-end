@@ -56,10 +56,10 @@ public class EducationService {
         String detailFile = education.getEducationDetailImage();
 
         try {
-            if (preImage != null) {
+            if (preImage != null && !preImage.isEmpty()) {
                 preFile = imageService.uploadImage(preImage);
             }
-            if (detailImage != null) {
+            if (detailImage != null && !detailImage.isEmpty()) {
                 detailFile = imageService.uploadImage(detailImage);
             }
         } catch (IOException e) {
@@ -70,5 +70,24 @@ public class EducationService {
         Education updateEducation = educationRepository.save(education);
 
         return AdminEducationResponseDto.from(updateEducation);
+    }
+
+    // [DELETE] 어드민 교육프로그램 삭제
+    @Transactional
+    public void deleteEducation(Long educationId) {
+
+        Education education = findEducationById(educationId);
+
+        String preImage = education.getEducationPreImage();
+        String detailImage = education.getEducationDetailImage();
+
+        if (preImage != null && !preImage.isEmpty()) {
+            imageService.deleteImage(preImage);
+        }
+        if (detailImage != null && !detailImage.isEmpty()) {
+            imageService.deleteImage(detailImage);
+        }
+
+        educationRepository.delete(education);
     }
 }
