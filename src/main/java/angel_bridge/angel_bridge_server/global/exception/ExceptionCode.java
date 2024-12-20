@@ -32,9 +32,13 @@ public enum ExceptionCode {
     NOT_FOUND_REFRESH_TOKEN(HttpStatus.NOT_FOUND, 3007,"존재하지 않는 RefreshToken 입니다."),
     EXPIRED_PERIOD_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, 3008,"기한이 만료된 RefreshToken 입니다."),
     EXPIRED_PERIOD_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, 3009,"기한이 만료된 AccessToken 입니다."),
-    NOT_FOUND_REFRESH_TOKEN_IN_DB(HttpStatus.NOT_FOUND, 3010,"현재 DB에 존재하지 않는 RefreshToken 입니다.");
+    NOT_FOUND_REFRESH_TOKEN_IN_DB(HttpStatus.NOT_FOUND, 3010,"현재 DB에 존재하지 않는 RefreshToken 입니다."),
 
-    // 4000: [임의] Error
+    // 4000: image file Error
+    EMPTY_FILE_EXCEPTION(HttpStatus.BAD_REQUEST, 4001, "파일이 비어 있습니다."),
+    INVALID_FILENAME_EXCEPTION(HttpStatus.BAD_REQUEST, 4002, "파일 이름이 유효하지 않습니다."),
+    FILE_DELETE_FAILED_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, 4003, "파일 삭제에 실패했습니다."),
+    NOT_FOUND_FILE_EXCEPTION(HttpStatus.NOT_FOUND, 4004, "파일이 존재하지 않습니다.");
 
 
     // 5000: [임의] Error
