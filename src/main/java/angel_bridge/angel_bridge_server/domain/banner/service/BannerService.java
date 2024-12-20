@@ -43,4 +43,26 @@ public class BannerService {
 
         return AdminBannerResponseDto.from(saveBanner);
     }
+
+    // [PUT] 어드민 배너 정보 수정
+    @Transactional
+    public AdminBannerResponseDto updateBanner(BannerRequestDto request, MultipartFile file, Long bannerId) {
+
+        Banner banner = findBannerById(bannerId);
+
+        String image = banner.getImageUrl();
+
+        try {
+            if (file != null && !file.isEmpty()) {
+                image = imageService.uploadImage(file);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("이미지 저장에 실패하였습니다.", e);
+        }
+
+        banner.update(request, image);
+        Banner updateBanner = bannerRepository.save(banner);
+
+        return AdminBannerResponseDto.from(updateBanner);
+    }
 }

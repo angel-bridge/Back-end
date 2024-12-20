@@ -1,5 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.banner.entity;
 
+import angel_bridge.angel_bridge_server.domain.banner.dto.request.BannerRequestDto;
 import angel_bridge.angel_bridge_server.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -30,6 +31,13 @@ public class Banner extends BaseEntity {
 
     @Column(name = "is_post", nullable = false)
     private Boolean isPost;
+
+    public void update(BannerRequestDto request, String file) {
+        this.imageUrl = file;
+        this.name = request.name();
+        this.priority = request.priority();
+        this.isPost = request.isPost();
+    }
 
     @Builder
     public Banner(String imageUrl, String name, Integer priority, Boolean isPost) {
