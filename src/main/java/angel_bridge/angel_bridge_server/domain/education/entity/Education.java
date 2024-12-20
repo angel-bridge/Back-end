@@ -1,5 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.education.entity;
 
+import angel_bridge.angel_bridge_server.domain.education.dto.request.AdminEducationRequestDto;
 import angel_bridge.angel_bridge_server.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -49,6 +50,19 @@ public class Education extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "recruitment_status")
     private RecruitmentStatus recruitmentStatus;
+
+    public void update(AdminEducationRequestDto request, String preFile, String detailFile) {
+        this.educationPreImage = preFile;
+        this.educationDetailImage = detailFile;
+        this.educationDescription = request.description();
+        this.educationTitle = request.title();
+        this.educationStartDate = request.educationStartDate();
+        this.educationEndDate = request.educationEndDate();
+        this.recruitmentStartDate = request.recruitmentStartDate();
+        this.recruitmentEndDate = request.recruitmentEndDate();
+        this.price = request.price();
+        this.recruitmentStatus = this.recruitmentStartDate.isAfter(LocalDate.now()) ? RecruitmentStatus.UPCOMING : RecruitmentStatus.ONGOING;
+    }
 
     @Builder
     public Education(String educationPreImage, String educationDetailImage, String educationDescription, String educationTitle, LocalDate educationStartDate, LocalDate educationEndDate, LocalDate recruitmentStartDate, LocalDate recruitmentEndDate, String price, RecruitmentStatus recruitmentStatus) {

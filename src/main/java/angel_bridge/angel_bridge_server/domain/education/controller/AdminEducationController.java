@@ -1,7 +1,5 @@
 package angel_bridge.angel_bridge_server.domain.education.controller;
 
-import angel_bridge.angel_bridge_server.domain.blog.dto.request.AdminBlogRequestDto;
-import angel_bridge.angel_bridge_server.domain.blog.dto.response.AdminBlogResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.request.AdminEducationRequestDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.AdminEducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.service.EducationService;
@@ -28,5 +26,11 @@ public class AdminEducationController {
         return new CommonResponse<>(educationService.createEducation(request, preImage, detailImage), "하나의 교육프로그램 생성에 성공하였습니다.");
     }
 
+    @Operation(summary = "교육프로그램 정보 수정", description = "하나의 교육프로그램 정보를 수정하는 API")
+    @PutMapping("/{educationId}")
+    public CommonResponse<AdminEducationResponseDto> updateEducation(@Valid @RequestPart(value = "data") AdminEducationRequestDto request, @RequestPart(value = "preImage", required = false) MultipartFile preImage, @RequestPart(value = "detailImage", required = false) MultipartFile detailImage, @PathVariable Long educationId) {
+
+        return new CommonResponse<>(educationService.updateEducation(request, preImage, detailImage, educationId), "해당 교육프로그램 수정에 성공하였습니다.");
+    }
 
 }
