@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/admin/blog")
 @RequiredArgsConstructor
 @Tag(name = "ADMIN_Blog", description = "ADMIN 블로그 관련 API")
-public class BlogController {
+public class AdminBlogController {
 
     public final BlogService blogService;
 
