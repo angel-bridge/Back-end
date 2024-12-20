@@ -53,7 +53,12 @@ public class BannerService {
         String image = banner.getImageUrl();
 
         try {
+            // 기존 이미지 삭제 후 새로운 이미지 저장
             if (file != null && !file.isEmpty()) {
+                if (image != null && !image.isEmpty()) {
+                    imageService.deleteImage(image);
+                }
+
                 image = imageService.uploadImage(file);
             }
         } catch (IOException e) {
