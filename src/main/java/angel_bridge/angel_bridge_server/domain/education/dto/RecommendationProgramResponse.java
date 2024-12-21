@@ -18,11 +18,11 @@ public class RecommendationProgramResponse {
     private String description;
     private String recruitmentStatus;
 
-    public static RecommendationProgramResponse of(Education education) {
+    public static RecommendationProgramResponse from(Education education, String imageFile) {
 
         return RecommendationProgramResponse.builder()
                 .id(education.getId())
-                .preImage(education.getEducationPreImage())
+                .preImage(imageFile)
                 .title(education.getEducationTitle())
                 .description(education.getEducationDescription())
                 .recruitmentStatus(education.getRecruitmentStatus().getDescription())
