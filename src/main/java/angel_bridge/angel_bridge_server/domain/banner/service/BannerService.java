@@ -1,6 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.banner.service;
 
-import angel_bridge.angel_bridge_server.domain.banner.dto.request.BannerRequestDto;
+import angel_bridge.angel_bridge_server.domain.banner.dto.request.AdminBannerRequestDto;
 import angel_bridge.angel_bridge_server.domain.banner.dto.response.AdminBannerResponseDto;
 import angel_bridge.angel_bridge_server.domain.banner.entity.Banner;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
@@ -29,7 +29,7 @@ public class BannerService {
 
     // [POST] 어드민 배너 이미지 등록
     @Transactional
-    public AdminBannerResponseDto registerBanner(BannerRequestDto request, MultipartFile file) {
+    public AdminBannerResponseDto registerBanner(AdminBannerRequestDto request, MultipartFile file) {
 
         String image = null;
 
@@ -46,7 +46,7 @@ public class BannerService {
 
     // [PUT] 어드민 배너 정보 수정
     @Transactional
-    public AdminBannerResponseDto updateBanner(BannerRequestDto request, MultipartFile file, Long bannerId) {
+    public AdminBannerResponseDto updateBanner(AdminBannerRequestDto request, MultipartFile file, Long bannerId) {
 
         Banner banner = findBannerById(bannerId);
 
