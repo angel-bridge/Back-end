@@ -110,7 +110,7 @@ public class BannerService {
     // [GET] 일반 사용자 배너 조회
     public List<BannerResponseDto> getBanner() {
 
-        List<Banner> banners = bannerRepository.findByDeletedAtIsNull();
+        List<Banner> banners = bannerRepository.findAllActiveBannersSortedByPriority();
 
         return banners.stream()
                 .map(banner -> BannerResponseDto.from(imageService.getImageUrl(banner.getBannerImage())))
