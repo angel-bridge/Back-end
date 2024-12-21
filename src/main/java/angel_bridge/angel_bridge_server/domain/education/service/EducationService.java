@@ -7,15 +7,18 @@ import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
 import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.IMAGE_UPLOAD_ERROR;
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.NOT_FOUND_EDUCATION_ID;
 
 @Service
+@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class EducationService {
@@ -38,7 +41,9 @@ public class EducationService {
             preFile = imageService.uploadImage(preImage);
             detailFile = imageService.uploadImage(detailImage);
         } catch (IOException e) {
-            throw new RuntimeException("이미지 저장에 실패하였습니다.", e);
+
+            log.error("이미지 업로드 중 오류 발생: {}", e.getMessage(), e);
+            throw new ApplicationException(IMAGE_UPLOAD_ERROR);
         }
 
         Education saveEducation = educationRepository.save(request.toEntity(preFile, detailFile));
@@ -72,7 +77,9 @@ public class EducationService {
                 detailFile = imageService.uploadImage(detailImage);
             }
         } catch (IOException e) {
-            throw new RuntimeException("이미지 저장에 실패하였습니다.", e);
+
+            log.error("이미지 업로드 중 오류 발생: {}", e.getMessage(), e);
+            throw new ApplicationException(IMAGE_UPLOAD_ERROR);
         }
 
         education.update(request, preFile, detailFile);
