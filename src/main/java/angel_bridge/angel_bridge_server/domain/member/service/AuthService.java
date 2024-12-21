@@ -70,7 +70,7 @@ public class AuthService {
 
         String oauthname = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
-        return jwtUtil.createJwt("access", oauthname, role, 1000L * 60 * 60 * 2);
+        return jwtUtil.createJwt("access", oauthname, role, 1000L * 60 * 60 * 24 * 14);
     }
 
     /**
