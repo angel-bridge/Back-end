@@ -26,7 +26,7 @@ public class BannerController {
         return new CommonResponse<>(bannerService.registerBanner(request, file), "하나의 배너 이미지 등록에 성공하였습니다.");
     }
 
-    @Operation(summary = "배너 이미지 정보 수정", description = "하나의 배너 이미지를 등록하는 API")
+    @Operation(summary = "배너 이미지 정보 수정", description = "해당 배너 이미지 정보를 수정하는 API")
     @PutMapping("/{bannerId}")
     public CommonResponse<AdminBannerResponseDto> updateBanner(@Valid @RequestPart(value = "data") BannerRequestDto request, @RequestPart(value = "image", required = false) MultipartFile file, @PathVariable Long bannerId) {
 
