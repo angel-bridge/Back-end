@@ -10,13 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.NOT_FOUND_BLOG_ID;
-import angel_bridge.angel_bridge_server.domain.blog.dto.BlogResponseDto;
-import angel_bridge.angel_bridge_server.domain.blog.entity.Blog;
-import angel_bridge.angel_bridge_server.domain.blog.repository.BlogRepository;
-import lombok.RequiredArgsConstructor;
+import angel_bridge.angel_bridge_server.domain.blog.dto.response.BlogResponseDto;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -62,6 +57,7 @@ public class BlogService {
 
         blogRepository.delete(blog);
     }
+
     // [GET] 일반 사용자 최신 블로그 글 2개 조회
     public List<BlogResponseDto> getNewArticle() {
 
