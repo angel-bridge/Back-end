@@ -2,6 +2,7 @@ package angel_bridge.angel_bridge_server.domain.banner.service;
 
 import angel_bridge.angel_bridge_server.domain.banner.dto.request.AdminBannerRequestDto;
 import angel_bridge.angel_bridge_server.domain.banner.dto.response.AdminBannerResponseDto;
+import angel_bridge.angel_bridge_server.domain.banner.dto.response.BannerResponseDto;
 import angel_bridge.angel_bridge_server.domain.banner.entity.Banner;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.BannerRepository;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.IMAGE_UPLOAD_ERROR;
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.NOT_FOUND_BANNER_ID;
@@ -103,5 +105,15 @@ public class BannerService {
         }
 
         bannerRepository.delete(banner);
+    }
+
+    // [GET] 일반 사용자 배너 조회
+    public List<BannerResponseDto> getBanner() {
+
+        List<Banner> banners = bannerRepository.findByDeletedAtIsNull();
+
+        return banners.stream()
+                .map(banner -> BannerResponseDto.from(imageService.getImageUrl(banner.getBannerImage())))
+                .toList();
     }
 }
