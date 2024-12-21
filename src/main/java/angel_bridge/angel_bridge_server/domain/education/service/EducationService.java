@@ -30,22 +30,18 @@ public class EducationService {
     private final ImageService imageService;
     private final EducationRepository educationRepository;
 
-    /**
-     * 프로그램 추천 메서드
-     *
-     * 모집 중인 프로그램 중에서 마감 기간이 가까운 순으로 우선 추천합니다.
-     */
+    // [GET] 일반 사용자 추천 교육 프로그램 조회
     public List<RecommendationProgramResponse> getRecommendationProgram() {
 
         List<RecommendationProgramResponse> responses = new ArrayList<>();
 
         // 모집 중인 프로그램 (마감 기간이 가까운 순으로 정렬)
         List<Education> ongoingEducations
-                = educationRepository.findByRecruitmentStatusOrderByRecruitmentEndDateAsc(RecruitmentStatus.ONGOING);
+                = educationRepository.findByRecruitmentStatusAndDeletedAtIsNullOrderByRecruitmentEndDateAsc(RecruitmentStatus.ONGOING);
 
         // 모집 예정인 프로그램 (마감 기간이 가까운 순으로 정렬)
         List<Education> upcomingEducations
-                = educationRepository.findByRecruitmentStatusOrderByRecruitmentEndDateAsc(RecruitmentStatus.UPCOMING);
+                = educationRepository.findByRecruitmentStatusAndDeletedAtIsNullOrderByRecruitmentEndDateAsc(RecruitmentStatus.UPCOMING);
 
         for (int i = 0; i < Math.min(3, ongoingEducations.size()); i++) {
             responses.add(RecommendationProgramResponse.of(ongoingEducations.get(i)));
