@@ -44,14 +44,18 @@ public class EducationService {
                 = educationRepository.findByRecruitmentStatusAndDeletedAtIsNullOrderByRecruitmentEndDateAsc(RecruitmentStatus.UPCOMING);
 
         for (int i = 0; i < Math.min(3, ongoingEducations.size()); i++) {
-            responses.add(RecommendationProgramResponse.of(ongoingEducations.get(i)));
+            responses.add(RecommendationProgramResponse.from(
+                    ongoingEducations.get(i),
+                    imageService.getImageUrl(ongoingEducations.get(i).getEducationPreImage()))
+            );
         }
-        if (responses.size() < 3) {
-            for (int i = 0; i < Math.min(3 - responses.size(), upcomingEducations.size()); i++) {
-                responses.add(RecommendationProgramResponse.of(upcomingEducations.get(i)));
-            }
+        int remaining = Math.max(0, 3 - responses.size());
+        for (int i = 0; i < Math.min(remaining, upcomingEducations.size()); i++) {
+            responses.add(RecommendationProgramResponse.from(
+                    upcomingEducations.get(i),
+                    imageService.getImageUrl(upcomingEducations.get(i).getEducationPreImage()))
+            );
         }
-
         return responses;
     }
 
