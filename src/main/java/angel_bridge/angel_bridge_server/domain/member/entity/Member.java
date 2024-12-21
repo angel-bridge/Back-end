@@ -1,5 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.member.entity;
 
+import angel_bridge.angel_bridge_server.domain.member.dto.request.MemberRequestDto;
 import angel_bridge.angel_bridge_server.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -47,6 +48,9 @@ public class Member extends BaseEntity {
     @Column
     private String role;
 
+    @Column(name = "is_select")
+    private Boolean isSelect;
+
     // 카카오에서 가져온 사용자 특정할 일종의 아이디 요소
     @Column(name = "oauth_name")
     private String oauthname;
@@ -55,12 +59,17 @@ public class Member extends BaseEntity {
     private LocalDateTime inactiveDate;
 
     public void update(String nickname) {
-
         this.nickname = nickname;
     }
 
+    public void update(MemberRequestDto request) {
+        this.email = request.email();
+        this.phoneNumber = request.phoneNumber();
+        this.isSelect = request.isSelect();
+    }
+
     @Builder
-    public Member(String name, String nickname, String email, String phoneNumber, String loginType, String status, String role, String oauthname, LocalDateTime inactiveDate) {
+    public Member(String name, String nickname, String email, String phoneNumber, String loginType, String status, String role, Boolean isSelect, String oauthname, LocalDateTime inactiveDate) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
@@ -68,6 +77,7 @@ public class Member extends BaseEntity {
         this.loginType = (loginType == null || loginType.isEmpty()) ? LoginType.KAKAO : LoginType.valueOf(loginType);
         this.status = (status == null || status.isEmpty()) ? MemberStatus.ACTIVE : MemberStatus.valueOf(status);
         this.role = role;
+        this.isSelect = isSelect;
         this.oauthname = oauthname;
         this.inactiveDate = inactiveDate;
     }
