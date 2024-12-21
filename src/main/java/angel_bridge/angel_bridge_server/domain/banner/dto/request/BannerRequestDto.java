@@ -20,7 +20,7 @@ public record BannerRequestDto(
     public Banner toEntity(String file) {
 
         return Banner.builder()
-                .imageUrl(file)
+                .bannerImage(file)
                 .name(this.name)
                 .priority(this.priority)
                 .isPost(this.isPost)

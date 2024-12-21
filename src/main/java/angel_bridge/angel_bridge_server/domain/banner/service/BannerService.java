@@ -50,7 +50,7 @@ public class BannerService {
 
         Banner banner = findBannerById(bannerId);
 
-        String image = banner.getImageUrl();
+        String image = banner.getBannerImage();
 
         try {
             // 기존 이미지 삭제 후 새로운 이미지 저장
@@ -89,7 +89,7 @@ public class BannerService {
 
         Banner banner = findBannerById(bannerId);
 
-        String image = banner.getImageUrl();
+        String image = banner.getBannerImage();
 
         if (image != null && !image.isEmpty()) {
             imageService.deleteImage(image);

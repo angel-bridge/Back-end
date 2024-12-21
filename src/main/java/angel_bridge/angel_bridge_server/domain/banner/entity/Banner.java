@@ -20,8 +20,8 @@ public class Banner extends BaseEntity {
     @Column(name = "banner_id", nullable = false)
     private Long id;
 
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
+    @Column(name = "banner_image", nullable = false)
+    private String bannerImage;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -37,15 +37,15 @@ public class Banner extends BaseEntity {
     }
 
     public void update(BannerRequestDto request, String file) {
-        this.imageUrl = file;
+        this.bannerImage = file;
         this.name = request.name();
         this.priority = request.priority();
         this.isPost = request.isPost();
     }
 
     @Builder
-    public Banner(String imageUrl, String name, Integer priority, Boolean isPost) {
-        this.imageUrl = imageUrl;
+    public Banner(String bannerImage, String name, Integer priority, Boolean isPost) {
+        this.bannerImage = bannerImage;
         this.name = name;
         this.priority = priority;
         this.isPost = isPost;

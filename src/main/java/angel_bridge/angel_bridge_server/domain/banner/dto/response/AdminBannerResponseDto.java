@@ -20,7 +20,7 @@ public record AdminBannerResponseDto(
 
         return AdminBannerResponseDto.builder()
                 .bannerId(banner.getId())
-                .imageFile(banner.getImageUrl())
+                .imageFile(banner.getBannerImage())
                 .name(banner.getName())
                 .priority(banner.getPriority())
                 .isPost(banner.getIsPost())
