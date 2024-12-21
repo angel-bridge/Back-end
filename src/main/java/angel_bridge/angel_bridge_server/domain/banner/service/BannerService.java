@@ -113,6 +113,7 @@ public class BannerService {
         List<Banner> banners = bannerRepository.findAllActiveBannersSortedByPriority();
 
         return banners.stream()
+                .filter(banner -> banner.getPriority() >= 1 && banner.getPriority() <= 3)
                 .map(banner -> BannerResponseDto.from(imageService.getImageUrl(banner.getBannerImage())))
                 .toList();
     }
