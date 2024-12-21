@@ -1,4 +1,4 @@
-package angel_bridge.angel_bridge_server.domain.blog.dto;
+package angel_bridge.angel_bridge_server.domain.blog.dto.response;
 
 import angel_bridge.angel_bridge_server.domain.blog.entity.Blog;
 import io.swagger.v3.oas.annotations.media.Schema;
