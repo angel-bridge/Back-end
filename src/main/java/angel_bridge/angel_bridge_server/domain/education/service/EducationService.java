@@ -1,8 +1,10 @@
 package angel_bridge.angel_bridge_server.domain.education.service;
 
+import angel_bridge.angel_bridge_server.domain.education.dto.RecommendationProgramResponse;
 import angel_bridge.angel_bridge_server.domain.education.dto.request.AdminEducationRequestDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.AdminEducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
+import angel_bridge.angel_bridge_server.domain.education.entity.RecruitmentStatus;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
 import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
@@ -25,6 +27,7 @@ import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.NO
 @Transactional(readOnly = true)
 public class EducationService {
 
+    private final ImageService imageService;
     private final EducationRepository educationRepository;
 
     /**
@@ -55,9 +58,6 @@ public class EducationService {
 
         return responses;
     }
-
-    private final EducationRepository educationRepository;
-    private final ImageService imageService;
 
     public Education findEducationById(Long educationId) {
         return educationRepository.findByIdAndDeletedAtIsNull(educationId).orElseThrow(() -> new ApplicationException(NOT_FOUND_EDUCATION_ID));
