@@ -38,10 +38,13 @@ public enum ExceptionCode {
     EMPTY_FILE_EXCEPTION(HttpStatus.BAD_REQUEST, 4001, "파일이 비어 있습니다."),
     INVALID_FILENAME_EXCEPTION(HttpStatus.BAD_REQUEST, 4002, "파일 이름이 유효하지 않습니다."),
     FILE_DELETE_FAILED_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, 4003, "파일 삭제에 실패했습니다."),
-    NOT_FOUND_FILE_EXCEPTION(HttpStatus.NOT_FOUND, 4004, "파일이 존재하지 않습니다.");
+    NOT_FOUND_FILE_EXCEPTION(HttpStatus.NOT_FOUND, 4004, "파일이 존재하지 않습니다."),
 
-
-    // 5000: [임의] Error
+    // 5000: Admin Error
+    NOT_FOUND_BLOG_ID(HttpStatus.NOT_FOUND, 5001,"존재하지 않는 Blog 입니다."),
+    IMAGE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 5002, "이미지 저장에 실패하였습니다."),
+    NOT_FOUND_EDUCATION_ID(HttpStatus.NOT_FOUND, 5003,"존재하지 않는 교육 프로그램입니다."),
+    NOT_FOUND_BANNER_ID(HttpStatus.NOT_FOUND, 5004,"존재하지 않는 배너입니다.");
 
 
     // 6000: [임의] Error

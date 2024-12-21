@@ -7,9 +7,9 @@ import lombok.ToString;
 @ToString
 public enum RecruitmentStatus {
 
-    UPCOMING("UPCOMING"),
-    ONGOING("ONGOING"),
-    CLOSED("CLOSED");
+    UPCOMING("모집예정"),
+    ONGOING("모집중"),
+    CLOSED("모집종료");
 
     private final String description;
 
@@ -17,3 +17,4 @@ public enum RecruitmentStatus {
         this.description = description;
     }
 }
+
