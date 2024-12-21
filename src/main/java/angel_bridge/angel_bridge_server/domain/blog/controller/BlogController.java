@@ -1,6 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.blog.controller;
 
-import angel_bridge.angel_bridge_server.domain.blog.dto.BlogResponseDto;
+import angel_bridge.angel_bridge_server.domain.blog.dto.response.BlogResponseDto;
 import angel_bridge.angel_bridge_server.domain.blog.service.BlogService;
 import angel_bridge.angel_bridge_server.global.common.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
