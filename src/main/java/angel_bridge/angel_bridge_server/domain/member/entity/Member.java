@@ -55,8 +55,8 @@ public class Member extends BaseEntity {
     @Column(name = "oauth_name")
     private String oauthname;
 
-    @Column(name = "inactive_date")
-    private LocalDateTime inactiveDate;
+    @Column(name = "is_registered")
+    private Boolean isRegistered;
 
     public void update(String nickname) {
         this.nickname = nickname;
@@ -69,7 +69,7 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(String name, String nickname, String email, String phoneNumber, String loginType, String status, String role, Boolean isSelect, String oauthname, LocalDateTime inactiveDate) {
+    public Member(String name, String nickname, String email, String phoneNumber, String loginType, String status, String role, Boolean isSelect, String oauthname, Boolean isRegistered) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
@@ -79,6 +79,6 @@ public class Member extends BaseEntity {
         this.role = role;
         this.isSelect = isSelect;
         this.oauthname = oauthname;
-        this.inactiveDate = inactiveDate;
+        this.isRegistered = isRegistered;
     }
 }

@@ -18,7 +18,9 @@ public record MemberResponseDto(
 
         String role,
 
-        Boolean isSelect
+        Boolean isSelect,
+
+        Boolean isRegistered
 ) {
     public static MemberResponseDto from(Member member) {
 
@@ -29,6 +31,7 @@ public record MemberResponseDto(
                 .phoneNumber(member.getPhoneNumber())
                 .role(member.getRole())
                 .isSelect(member.getIsSelect())
+                .isRegistered(member.getEmail() == null ? false : true)
                 .build();
     }
 }
