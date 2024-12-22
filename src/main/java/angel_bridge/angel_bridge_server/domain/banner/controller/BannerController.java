@@ -18,10 +18,10 @@ public class BannerController {
 
     private final BannerService bannerService;
 
-    @Operation(summary = "배너 이미지 조회", description = "3개의 배너 이미지를 조회하는 API")
+    @Operation(summary = "메인 페이지 배너 이미지 조회", description = "3개의 배너 이미지를 조회하는 API")
     @GetMapping
     public CommonResponse<List<BannerResponseDto>> registerBanner() {
 
-        return new CommonResponse<>(bannerService.getBanner(), "배너 이미지 조회에 성공하였습니다.");
+        return new CommonResponse<>(bannerService.getBanner(), "메인 페이지의 배너 이미지 조회에 성공하였습니다.");
     }
 }
