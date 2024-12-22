@@ -10,6 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.NOT_FOUND_BLOG_ID;
+import angel_bridge.angel_bridge_server.domain.blog.dto.response.BlogResponseDto;
+import org.springframework.data.domain.PageRequest;
+
+import org.springframework.data.domain.Pageable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -50,5 +56,16 @@ public class BlogService {
         Blog blog = findBlogById(blogId);
 
         blogRepository.delete(blog);
+    }
+
+    // [GET] 일반 사용자 최신 블로그 글 2개 조회
+    public List<BlogResponseDto> getNewArticle() {
+
+        Pageable pageable = PageRequest.of(0, 2);
+        List<Blog> latestBlogs = blogRepository.findLatestBlogs(pageable);
+
+        return latestBlogs.stream()
+                .map(BlogResponseDto::from)
+                .collect(Collectors.toList());
     }
 }
