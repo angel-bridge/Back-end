@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.IMAGE_UPLOAD_ERROR;
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.NOT_FOUND_EDUCATION_ID;
@@ -33,28 +34,32 @@ public class EducationService {
     // [GET] 일반 사용자 추천 교육 프로그램 조회
     public List<RecommendationProgramResponse> getRecommendationProgram() {
 
-        List<RecommendationProgramResponse> responses = new ArrayList<>();
-
         // 모집 중인 프로그램 (마감 기간이 가까운 순으로 정렬)
         List<Education> ongoingEducations
-                = educationRepository.findByRecruitmentStatusAndDeletedAtIsNullOrderByRecruitmentEndDateAsc(RecruitmentStatus.ONGOING);
+                = educationRepository.findEducationsByStatus(RecruitmentStatus.ONGOING);
 
         // 모집 예정인 프로그램 (마감 기간이 가까운 순으로 정렬)
         List<Education> upcomingEducations
-                = educationRepository.findByRecruitmentStatusAndDeletedAtIsNullOrderByRecruitmentEndDateAsc(RecruitmentStatus.UPCOMING);
+                = educationRepository.findEducationsByStatus(RecruitmentStatus.UPCOMING);
 
-        for (int i = 0; i < Math.min(3, ongoingEducations.size()); i++) {
-            responses.add(RecommendationProgramResponse.from(
-                    ongoingEducations.get(i),
-                    imageService.getImageUrl(ongoingEducations.get(i).getEducationPreImage()))
-            );
-        }
-        int remaining = Math.max(0, 3 - responses.size());
-        for (int i = 0; i < Math.min(remaining, upcomingEducations.size()); i++) {
-            responses.add(RecommendationProgramResponse.from(
-                    upcomingEducations.get(i),
-                    imageService.getImageUrl(upcomingEducations.get(i).getEducationPreImage()))
-            );
+        // 모집 중인 프로그램에서 최대 3개 선택
+        List<RecommendationProgramResponse> responses = ongoingEducations.stream()
+                .limit(3)
+                .map(education -> RecommendationProgramResponse.from(
+                        education, imageService.getImageUrl(education.getEducationPreImage())
+                ))
+                .collect(Collectors.toList());
+
+        // 모집 중인 프로그램에서 부족한 경우, 모집 예정인 프로그램에서 추가 선택
+        int remaining = 3 - responses.size();
+        if (remaining > 0) {
+            List<RecommendationProgramResponse> upcomingResponses = upcomingEducations.stream()
+                    .limit(remaining)
+                    .map(education -> RecommendationProgramResponse.from(
+                            education, imageService.getImageUrl(education.getEducationPreImage())
+                    ))
+                    .toList();
+            responses.addAll(upcomingResponses);
         }
         return responses;
     }
