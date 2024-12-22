@@ -107,13 +107,14 @@ public class BannerService {
         bannerRepository.delete(banner);
     }
 
-    // [GET] 일반 사용자 배너 조회
+    // [GET] 일반 사용자 메인 페이지 배너 조회
     public List<BannerResponseDto> getBanner() {
 
         List<Banner> banners = bannerRepository.findAllActiveBannersSortedByPriority();
 
         return banners.stream()
                 .filter(banner -> banner.getPriority() >= 1 && banner.getPriority() <= 3)
+                .limit(3)
                 .map(banner -> BannerResponseDto.from(imageService.getImageUrl(banner.getBannerImage())))
                 .toList();
     }
