@@ -17,9 +17,6 @@ public record BlogResponseDto(
         @Schema(description = "블로그 글 시작 문구", example = "2025 스타트업 지원 사업들에 대해 저희 엔젤브릿지가 설명해드리겠습니다.")
         String content,
         @NotNull
-        @Schema(description = "블로그 글 저자", example = "angelbridge")
-        String author,
-        @NotNull
         @Schema(description = "블로그 글 포스팅 날짜", example = "2024-12-21")
         LocalDate postingDate,
         @NotNull
@@ -30,7 +27,6 @@ public record BlogResponseDto(
             return BlogResponseDto.builder()
                     .title(blog.getTitle())
                     .content(blog.getStartText())
-                    .author("angelbridge")
                     .postingDate(blog.getBlogDate())
                     .link(blog.getBlogLink())
                     .build();
