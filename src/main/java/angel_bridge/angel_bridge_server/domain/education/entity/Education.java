@@ -77,7 +77,7 @@ public class Education extends BaseEntity {
         this.recruitmentStartDate = recruitmentStartDate;
         this.recruitmentEndDate = recruitmentEndDate;
         this.price = price;
-        this.recruitmentStatus = RecruitmentStatus.UPCOMING;
+        this.recruitmentStatus = recruitmentStatus;
     }
 }
 
