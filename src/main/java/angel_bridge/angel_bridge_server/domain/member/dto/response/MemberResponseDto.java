@@ -31,7 +31,7 @@ public record MemberResponseDto(
                 .phoneNumber(member.getPhoneNumber())
                 .role(member.getRole())
                 .isSelect(member.getIsSelect())
-                .isRegistered(member.getEmail() == null ? false : true)
+                .isRegistered(member.getIsRegistered())
                 .build();
     }
 }

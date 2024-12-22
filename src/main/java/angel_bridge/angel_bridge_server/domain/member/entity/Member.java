@@ -66,19 +66,20 @@ public class Member extends BaseEntity {
         this.email = request.email();
         this.phoneNumber = request.phoneNumber();
         this.isSelect = request.isSelect();
+        this.isRegistered = true;
     }
 
     @Builder
-    public Member(String name, String nickname, String email, String phoneNumber, String loginType, String status, String role, Boolean isSelect, String oauthname, Boolean isRegistered) {
+    public Member(String name, String nickname, String email, String phoneNumber, LoginType loginType, MemberStatus status, String role, Boolean isSelect, String oauthname, Boolean isRegistered) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.loginType = (loginType == null || loginType.isEmpty()) ? LoginType.KAKAO : LoginType.valueOf(loginType);
-        this.status = (status == null || status.isEmpty()) ? MemberStatus.ACTIVE : MemberStatus.valueOf(status);
+        this.loginType = (loginType == null ? LoginType.KAKAO : loginType);
+        this.status = (status == null ? MemberStatus.ACTIVE : status);
         this.role = role;
         this.isSelect = isSelect;
         this.oauthname = oauthname;
-        this.isRegistered = isRegistered;
+        this.isRegistered = (isRegistered == null ? false : isRegistered);
     }
 }
