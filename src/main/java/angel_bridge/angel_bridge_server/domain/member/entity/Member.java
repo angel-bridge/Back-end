@@ -1,5 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.member.entity;
 
+import angel_bridge.angel_bridge_server.domain.member.dto.request.AuthRequestDto;
 import angel_bridge.angel_bridge_server.domain.member.dto.request.MemberRequestDto;
 import angel_bridge.angel_bridge_server.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -8,9 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
-
-import java.sql.Date;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -62,11 +60,17 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
     }
 
-    public void update(MemberRequestDto request) {
+    public void update(AuthRequestDto request) {
         this.email = request.email();
         this.phoneNumber = request.phoneNumber();
         this.isSelect = request.isSelect();
         this.isRegistered = true;
+    }
+
+    public void update(MemberRequestDto request) {
+        this.nickname = request.nickname();
+        this.email = request.email();
+        this.phoneNumber = request.phoneNumber();
     }
 
     @Builder

@@ -1,6 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.member.service;
 
-import angel_bridge.angel_bridge_server.domain.member.dto.request.MemberRequestDto;
+import angel_bridge.angel_bridge_server.domain.member.dto.request.AuthRequestDto;
 import angel_bridge.angel_bridge_server.domain.member.dto.response.MemberResponseDto;
 import angel_bridge.angel_bridge_server.domain.member.entity.Member;
 import angel_bridge.angel_bridge_server.domain.member.entity.Refresh;
@@ -150,7 +150,7 @@ public class AuthService {
 
     // [POST] 회원가입 시 초기 정보 저장
     @Transactional
-    public MemberResponseDto saveMemberInfo(MemberRequestDto request, Long memberId) {
+    public MemberResponseDto saveMemberInfo(AuthRequestDto request, Long memberId) {
 
         Member member = findMemberById(memberId);
 

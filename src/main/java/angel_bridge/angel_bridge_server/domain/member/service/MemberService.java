@@ -1,5 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.member.service;
 
+import angel_bridge.angel_bridge_server.domain.member.dto.request.AuthRequestDto;
 import angel_bridge.angel_bridge_server.domain.member.dto.request.MemberRequestDto;
 import angel_bridge.angel_bridge_server.domain.member.dto.response.MemberResponseDto;
 import angel_bridge.angel_bridge_server.domain.member.entity.Member;
@@ -29,5 +30,17 @@ public class MemberService {
         Member member = findMemberById(memberId);
 
         return MemberResponseDto.from(member);
+    }
+
+    // [PUT] 회원 정보 수정
+    @Transactional
+    public MemberResponseDto updateMemberInfo(MemberRequestDto request, Long memberId) {
+
+        Member member = findMemberById(memberId);
+
+        member.update(request);
+        Member saveMember = memberRepository.save(member);
+
+        return MemberResponseDto.from(saveMember);
     }
 }
