@@ -33,6 +33,9 @@ public class Member extends BaseEntity {
     @Column(length = 320)
     private String email;
 
+    @Column(name = "profile_image")
+    private String profileImage;
+
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
@@ -41,7 +44,7 @@ public class Member extends BaseEntity {
     private LoginType loginType;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 8)
+    @Column(nullable = false, length = 10)
     private MemberStatus status;
 
     @Column
@@ -60,10 +63,11 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(String name, String nickname, String email, String phoneNumber, String loginType, String status, String role, String oauthname, LocalDateTime inactiveDate) {
+    public Member(String name, String nickname, String email, String profileImage, String phoneNumber, String loginType, String status, String role, String oauthname, LocalDateTime inactiveDate) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
+        this.profileImage = profileImage;
         this.phoneNumber = phoneNumber;
         this.loginType = (loginType == null || loginType.isEmpty()) ? LoginType.KAKAO : LoginType.valueOf(loginType);
         this.status = (status == null || status.isEmpty()) ? MemberStatus.ACTIVE : MemberStatus.valueOf(status);
