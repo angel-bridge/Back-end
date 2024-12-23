@@ -88,16 +88,12 @@ public class SecurityConfig {
                 );
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("http://3.39.14.152:8080").permitAll()
-                        .requestMatchers("http://3.39.14.152:8081").permitAll()
-                        .requestMatchers("http://localhost:3000").permitAll()
-                        .requestMatchers("http://localhost:3001").permitAll()
-
+                    
                         // 임시
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 
                         .requestMatchers("/api/auth/reissue").permitAll()
-                        .requestMatchers("/hc", "/env").permitAll()
+                        .requestMatchers("/hc", "/env", "/").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated());
         http
