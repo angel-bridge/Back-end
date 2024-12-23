@@ -52,6 +52,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member member = Member.builder()
                     .oauthname(oauthname)
                     .nickname(oAuth2Response.getName())
+                    .profileImage(oAuth2Response.getProfileImageUrl())
                     .role("ROLE_USER")
                     .build();
 
@@ -60,6 +61,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             OAuthUserDTO oAuthUserDTO = OAuthUserDTO.builder()
                     .oauthname(oauthname)
                     .nickname(oAuth2Response.getName())
+                    .profileImageUrl(member.getProfileImage())
                     .role("ROLE_USER")
                     .build();
 
@@ -67,13 +69,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
         else {
 
-            existData.update(oAuth2Response.getName());
-
-            memberRepository.save(existData);
-
             OAuthUserDTO oAuthUserDTO = OAuthUserDTO.builder()
                     .oauthname(existData.getOauthname())
-                    .nickname(oAuth2Response.getName())
+                    .nickname(existData.getNickname()) // 기존의 nickname 사용
+                    .profileImageUrl(existData.getProfileImage())
                     .role(existData.getRole())
                     .build();
 

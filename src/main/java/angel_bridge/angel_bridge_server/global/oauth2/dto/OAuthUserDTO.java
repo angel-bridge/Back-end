@@ -9,6 +9,7 @@ public record OAuthUserDTO (
         Member member,
         String role,
         String nickname,
-        String oauthname
+        String oauthname,
+        String profileImageUrl
 ) {
 }
