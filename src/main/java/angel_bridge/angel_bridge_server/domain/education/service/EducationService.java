@@ -3,6 +3,7 @@ package angel_bridge.angel_bridge_server.domain.education.service;
 import angel_bridge.angel_bridge_server.domain.education.dto.RecommendationProgramResponse;
 import angel_bridge.angel_bridge_server.domain.education.dto.request.AdminEducationRequestDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.AdminEducationResponseDto;
+import angel_bridge.angel_bridge_server.domain.education.dto.response.ProgramResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
 import angel_bridge.angel_bridge_server.domain.education.entity.RecruitmentStatus;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
@@ -10,6 +11,8 @@ import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
 import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -143,5 +146,33 @@ public class EducationService {
         }
 
         educationRepository.delete(education);
+    }
+
+    // [GET] 일반 사용자 전체 프로그램 조회
+    public List<ProgramResponseDto> getAllProgram(int page) {
+
+        Pageable pageable = PageRequest.of(page - 1, 12);
+
+        return educationRepository.findAll(pageable)
+                .map(ProgramResponseDto::from)
+                .stream().toList();
+    }
+
+    // [GET] 일반 사용자 모집 중인 전체 프로그램 조회
+    public List<ProgramResponseDto> getAllOngoingProgram(int page) {
+
+        Pageable pageable = PageRequest.of(page - 1, 12);
+        return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.ONGOING, pageable)
+                .map(ProgramResponseDto::from)
+                .stream().toList();
+    }
+
+    // [GET] 일반 사용자 모집 예정인 전체 프로그램 조회
+    public List<ProgramResponseDto> getAllUpcomingProgram(int page) {
+
+        Pageable pageable = PageRequest.of(page - 1, 12);
+        return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.UPCOMING, pageable)
+                .map(ProgramResponseDto::from)
+                .stream().toList();
     }
 }
