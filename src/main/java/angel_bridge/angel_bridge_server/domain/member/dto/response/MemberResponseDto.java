@@ -15,6 +15,8 @@ public record MemberResponseDto(
 
         String profileImageUrl,
 
+        String profileImageType,
+
         String phoneNumber,
 
         String role,
@@ -30,6 +32,7 @@ public record MemberResponseDto(
                 .nickname(member.getNickname())
                 .email(member.getEmail())
                 .profileImageUrl(member.getProfileImage())
+                .profileImageType(member.getImageType().getDescription())
                 .phoneNumber(member.getPhoneNumber())
                 .role(member.getRole())
                 .isSelect(member.getIsSelect())
