@@ -1,5 +1,8 @@
 package angel_bridge.angel_bridge_server.domain.member.service;
 
+import angel_bridge.angel_bridge_server.domain.member.dto.request.AuthRequestDto;
+import angel_bridge.angel_bridge_server.domain.member.dto.response.MemberResponseDto;
+import angel_bridge.angel_bridge_server.domain.member.entity.Member;
 import angel_bridge.angel_bridge_server.domain.member.entity.Refresh;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.jwt.JWTUtil;
@@ -25,6 +28,10 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findByIdAndDeletedAtIsNull(memberId).orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+    }
 
     /**
      * Refresh Token 추출
@@ -139,5 +146,17 @@ public class AuthService {
         response.setHeader("Authorization", "Bearer " + newAccessToken);
 
         response.addCookie(refreshCookie);
+    }
+
+    // [POST] 회원가입 시 초기 정보 저장
+    @Transactional
+    public MemberResponseDto saveMemberInfo(AuthRequestDto request, Long memberId) {
+
+        Member member = findMemberById(memberId);
+
+        member.update(request);
+        Member updateMember = memberRepository.save(member);
+
+        return MemberResponseDto.from(updateMember);
     }
 }

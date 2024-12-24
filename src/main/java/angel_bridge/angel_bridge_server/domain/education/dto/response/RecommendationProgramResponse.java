@@ -1,4 +1,4 @@
-package angel_bridge.angel_bridge_server.domain.education.dto;
+package angel_bridge.angel_bridge_server.domain.education.dto.response;
 
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
 import lombok.AllArgsConstructor;
