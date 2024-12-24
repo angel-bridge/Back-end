@@ -8,9 +8,11 @@ import angel_bridge.angel_bridge_server.global.common.response.CommonResponse;
 import angel_bridge.angel_bridge_server.global.oauth2.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/member")
@@ -31,10 +33,10 @@ public class MemberController {
 
     @Operation(summary = "회원 정보 수정", description = "회원 정보 수정하는 API")
     @PutMapping
-    public CommonResponse<MemberResponseDto> updateMemberInfo(@AuthenticationPrincipal CustomOAuth2User userDetails, MemberRequestDto request) {
+    public CommonResponse<MemberResponseDto> updateMemberInfo(@AuthenticationPrincipal CustomOAuth2User userDetails, @Valid @RequestPart(value = "data") MemberRequestDto request, @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
 
         Long memberId = userDetails.getMemberId();
 
-        return new CommonResponse<>(memberService.updateMemberInfo(request, memberId), "회원 정보 수정을 성공하였습니다.");
+        return new CommonResponse<>(memberService.updateMemberInfo(request, profileImage, memberId), "회원 정보 수정을 성공하였습니다.");
     }
 }

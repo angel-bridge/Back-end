@@ -59,6 +59,10 @@ public class Member extends BaseEntity {
     @Column(name = "is_registered")
     private Boolean isRegistered;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 8)
+    private ProfileImageType imageType;
+
     public void update(String nickname) {
         this.nickname = nickname;
     }
@@ -70,14 +74,15 @@ public class Member extends BaseEntity {
         this.isRegistered = true;
     }
 
-    public void update(MemberRequestDto request) {
+    public void update(MemberRequestDto request, String imageUrl) {
+        this.profileImage = imageUrl;
         this.nickname = request.nickname();
         this.email = request.email();
         this.phoneNumber = request.phoneNumber();
     }
 
     @Builder
-    public Member(String name, String nickname, String email, String profileImage, String phoneNumber, LoginType loginType, MemberStatus status, String role, Boolean isSelect, String oauthname, Boolean isRegistered) {
+    public Member(String name, String nickname, String email, String profileImage, String phoneNumber, LoginType loginType, MemberStatus status, String role, Boolean isSelect, String oauthname, Boolean isRegistered, ProfileImageType imageType) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
@@ -89,5 +94,6 @@ public class Member extends BaseEntity {
         this.isSelect = isSelect;
         this.oauthname = oauthname;
         this.isRegistered = (isRegistered == null ? false : isRegistered);
+        this.imageType = (imageType == null ? ProfileImageType.KAKAO : imageType);
     }
 }

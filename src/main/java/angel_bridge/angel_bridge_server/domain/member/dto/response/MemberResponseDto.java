@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public record MemberResponseDto(
 
         Long memberId,
@@ -13,6 +12,8 @@ public record MemberResponseDto(
         String nickname,
 
         String email,
+
+        String profileImageUrl,
 
         String phoneNumber,
 
@@ -28,6 +29,7 @@ public record MemberResponseDto(
                 .memberId(member.getId())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
+                .profileImageUrl(member.getProfileImage())
                 .phoneNumber(member.getPhoneNumber())
                 .role(member.getRole())
                 .isSelect(member.getIsSelect())
