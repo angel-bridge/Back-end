@@ -60,11 +60,11 @@ public class Member extends BaseEntity {
     private Boolean isRegistered;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 8)
+    @Column(nullable = false, length = 10)
     private ProfileImageType imageType;
 
-    public void update(String nickname) {
-        this.nickname = nickname;
+    public void updateImageType() {
+        this.imageType = ProfileImageType.ANGEL;
     }
 
     public void update(AuthRequestDto request) {
