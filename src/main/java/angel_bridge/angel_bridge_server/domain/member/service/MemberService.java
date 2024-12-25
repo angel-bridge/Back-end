@@ -33,7 +33,6 @@ public class MemberService {
     }
 
     // [GET] 회원 기본 정보 조회
-    @Transactional
     public MemberResponseDto getMemberInfo(Long memberId) {
 
         Member member = findMemberById(memberId);
@@ -65,7 +64,8 @@ public class MemberService {
     /**
      * 프로필 이미지 처리 로직 (3가지 경우의 수)
      */
-    private String updateProfileImage(MultipartFile profileImage, Member member) throws IOException {
+    @Transactional
+    public String updateProfileImage(MultipartFile profileImage, Member member) throws IOException {
 
         // 경우 1 ) 프로필 이미지 아예 삭제하는 경우
         if (profileImage == null) {
