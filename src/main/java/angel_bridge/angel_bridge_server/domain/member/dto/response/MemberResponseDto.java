@@ -39,4 +39,19 @@ public record MemberResponseDto(
                 .isRegistered(member.getIsRegistered())
                 .build();
     }
+
+    public static MemberResponseDto from(Member member, String imageUrl) {
+
+        return MemberResponseDto.builder()
+                .memberId(member.getId())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .profileImageUrl(imageUrl != null ? imageUrl : member.getProfileImage())
+                .profileImageType(member.getImageType().getDescription())
+                .phoneNumber(member.getPhoneNumber())
+                .role(member.getRole())
+                .isSelect(member.getIsSelect())
+                .isRegistered(member.getIsRegistered())
+                .build();
+    }
 }

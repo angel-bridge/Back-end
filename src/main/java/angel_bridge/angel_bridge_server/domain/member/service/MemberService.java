@@ -37,7 +37,7 @@ public class MemberService {
 
         Member member = findMemberById(memberId);
 
-        return MemberResponseDto.from(member);
+        return createMemberResponseDto(member);
     }
 
     // [PUT] 회원 정보 수정
@@ -58,7 +58,23 @@ public class MemberService {
         member.update(request, newImage);
         Member updateMember = memberRepository.save(member);
 
-        return MemberResponseDto.from(updateMember);
+        return createMemberResponseDto(updateMember);
+    }
+
+    /**
+     * 이미지 타입에 따른 MemberResponseDto 생성하는 로직
+     */
+    private MemberResponseDto createMemberResponseDto(Member member) {
+
+        String imageUrl;
+
+        if (member.getImageType().equals(ProfileImageType.KAKAO) || member.getProfileImage() == null) {
+            imageUrl = null;
+        } else {
+            imageUrl = imageService.getImageUrl(member.getProfileImage());
+        }
+
+        return MemberResponseDto.from(member, imageUrl);
     }
 
     /**
