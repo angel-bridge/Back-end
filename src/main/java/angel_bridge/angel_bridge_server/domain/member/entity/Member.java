@@ -1,5 +1,7 @@
 package angel_bridge.angel_bridge_server.domain.member.entity;
 
+import angel_bridge.angel_bridge_server.domain.member.dto.request.AuthRequestDto;
+import angel_bridge.angel_bridge_server.domain.member.dto.request.MemberRequestDto;
 import angel_bridge.angel_bridge_server.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -7,9 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
-
-import java.sql.Date;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -50,29 +49,51 @@ public class Member extends BaseEntity {
     @Column
     private String role;
 
+    @Column(name = "is_select")
+    private Boolean isSelect;
+
     // 카카오에서 가져온 사용자 특정할 일종의 아이디 요소
     @Column(name = "oauth_name")
     private String oauthname;
 
-    @Column(name = "inactive_date")
-    private LocalDateTime inactiveDate;
+    @Column(name = "is_registered")
+    private Boolean isRegistered;
 
-    public void update(String nickname) {
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private ProfileImageType imageType;
 
-        this.nickname = nickname;
+    public void updateImageType() {
+        this.imageType = ProfileImageType.ANGEL;
+    }
+
+    public void update(AuthRequestDto request) {
+        this.email = request.email();
+        this.phoneNumber = request.phoneNumber();
+        this.isSelect = request.isSelect();
+        this.isRegistered = true;
+    }
+
+    public void update(MemberRequestDto request, String imageUrl) {
+        this.profileImage = imageUrl;
+        this.nickname = request.nickname();
+        this.email = request.email();
+        this.phoneNumber = request.phoneNumber();
     }
 
     @Builder
-    public Member(String name, String nickname, String email, String profileImage, String phoneNumber, String loginType, String status, String role, String oauthname, LocalDateTime inactiveDate) {
+    public Member(String name, String nickname, String email, String profileImage, String phoneNumber, LoginType loginType, MemberStatus status, String role, Boolean isSelect, String oauthname, Boolean isRegistered, ProfileImageType imageType) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.profileImage = profileImage;
         this.phoneNumber = phoneNumber;
-        this.loginType = (loginType == null || loginType.isEmpty()) ? LoginType.KAKAO : LoginType.valueOf(loginType);
-        this.status = (status == null || status.isEmpty()) ? MemberStatus.ACTIVE : MemberStatus.valueOf(status);
+        this.loginType = (loginType == null ? LoginType.KAKAO : loginType);
+        this.status = (status == null ? MemberStatus.ACTIVE : status);
         this.role = role;
+        this.isSelect = isSelect;
         this.oauthname = oauthname;
-        this.inactiveDate = inactiveDate;
+        this.isRegistered = (isRegistered == null ? false : isRegistered);
+        this.imageType = (imageType == null ? ProfileImageType.KAKAO : imageType);
     }
 }

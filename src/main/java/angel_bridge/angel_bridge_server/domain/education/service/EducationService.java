@@ -1,6 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.education.service;
 
-import angel_bridge.angel_bridge_server.domain.education.dto.RecommendationProgramResponse;
+import angel_bridge.angel_bridge_server.domain.education.dto.response.RecommendationProgramResponse;
 import angel_bridge.angel_bridge_server.domain.education.dto.request.AdminEducationRequestDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.AdminEducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
