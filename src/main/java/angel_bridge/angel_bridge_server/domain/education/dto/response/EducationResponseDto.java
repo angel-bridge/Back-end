@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 @Builder
-public record ProgramResponseDto(
+public record EducationResponseDto(
 
         @Schema(description = "프로그램 id", example = "1")
         Long educationId,
@@ -23,8 +23,8 @@ public record ProgramResponseDto(
         String recruitmentStatus
 ) {
 
-    public static ProgramResponseDto from(Education education, String preImage) {
-        return ProgramResponseDto.builder()
+    public static EducationResponseDto from(Education education, String preImage) {
+        return EducationResponseDto.builder()
                 .educationId(education.getId())
                 .preImage(preImage)
                 .description(education.getEducationDescription())

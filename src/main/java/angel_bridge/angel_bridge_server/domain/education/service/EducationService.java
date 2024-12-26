@@ -3,7 +3,7 @@ package angel_bridge.angel_bridge_server.domain.education.service;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationDetailResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.request.AdminEducationRequestDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.AdminEducationResponseDto;
-import angel_bridge.angel_bridge_server.domain.education.dto.response.ProgramResponseDto;
+import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
 import angel_bridge.angel_bridge_server.domain.education.entity.RecruitmentStatus;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
@@ -34,7 +34,7 @@ public class EducationService {
     private final EducationRepository educationRepository;
 
     // [GET] 일반 사용자 추천 교육 프로그램 조회
-    public List<ProgramResponseDto> getRecommendationProgram() {
+    public List<EducationResponseDto> getRecommendationProgram() {
 
         // 모집 중인 프로그램 (마감 기간이 가까운 순으로 정렬)
         List<Education> ongoingEducations
@@ -45,9 +45,9 @@ public class EducationService {
                 = educationRepository.findEducationsByStatus(RecruitmentStatus.UPCOMING);
 
         // 모집 중인 프로그램에서 최대 3개 선택
-        List<ProgramResponseDto> responses = ongoingEducations.stream()
+        List<EducationResponseDto> responses = ongoingEducations.stream()
                 .limit(3)
-                .map(education -> ProgramResponseDto.from(
+                .map(education -> EducationResponseDto.from(
                         education, imageService.getImageUrl(education.getEducationPreImage())
                 ))
                 .collect(Collectors.toList());
@@ -55,9 +55,9 @@ public class EducationService {
         // 모집 중인 프로그램에서 부족한 경우, 모집 예정인 프로그램에서 추가 선택
         int remaining = 3 - responses.size();
         if (remaining > 0) {
-            List<ProgramResponseDto> upcomingResponses = upcomingEducations.stream()
+            List<EducationResponseDto> upcomingResponses = upcomingEducations.stream()
                     .limit(remaining)
-                    .map(education -> ProgramResponseDto.from(
+                    .map(education -> EducationResponseDto.from(
                             education, imageService.getImageUrl(education.getEducationPreImage())
                     ))
                     .toList();
@@ -148,38 +148,38 @@ public class EducationService {
     }
 
     // [GET] 일반 사용자 전체 프로그램 조회
-    public List<ProgramResponseDto> getAllProgram(int page) {
+    public List<EducationResponseDto> getAllProgram(int page) {
 
         Pageable pageable = PageRequest.of(page - 1, 12);
 
         return educationRepository.findAll(pageable)
-                .map(education -> ProgramResponseDto.from(
+                .map(education -> EducationResponseDto.from(
                                 education, imageService.getImageUrl(education.getEducationPreImage())))
                 .stream().toList();
     }
 
     // [GET] 일반 사용자 모집 중인 전체 프로그램 조회
-    public List<ProgramResponseDto> getAllOngoingProgram(int page) {
+    public List<EducationResponseDto> getAllOngoingProgram(int page) {
 
         Pageable pageable = PageRequest.of(page - 1, 12);
         return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.ONGOING, pageable)
-                .map(education -> ProgramResponseDto.from(
+                .map(education -> EducationResponseDto.from(
                         education, imageService.getImageUrl(education.getEducationPreImage())))
                 .stream().toList();
     }
 
     // [GET] 일반 사용자 모집 예정인 전체 프로그램 조회
-    public List<ProgramResponseDto> getAllUpcomingProgram(int page) {
+    public List<EducationResponseDto> getAllUpcomingProgram(int page) {
 
         Pageable pageable = PageRequest.of(page - 1, 12);
         return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.UPCOMING, pageable)
-                .map(education -> ProgramResponseDto.from(
+                .map(education -> EducationResponseDto.from(
                         education, imageService.getImageUrl(education.getEducationPreImage())))
                 .stream().toList();
     }
 
     // [GET] 일반 사용자 프로그램 상세 페이지 조회
-    public EducationDetailResponseDto getProgramDetail(Long educationId) {
+    public EducationDetailResponseDto getEducationDetail(Long educationId) {
 
         Education education = findEducationById(educationId);
         return EducationDetailResponseDto.from(education, education.getEducationPreImage(), education.getEducationDetailImage());
