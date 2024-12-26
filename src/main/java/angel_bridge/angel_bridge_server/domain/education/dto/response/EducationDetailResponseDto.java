@@ -37,7 +37,7 @@ public record EducationDetailResponseDto(
 
 ) {
 
-        public static EducationDetailResponseDto from(Education education) {
+        public static EducationDetailResponseDto from(Education education, String preImage, String detailImage) {
 
                 return EducationDetailResponseDto.builder()
                         .title(education.getEducationTitle())
@@ -47,8 +47,8 @@ public record EducationDetailResponseDto(
                         .recruitmentStartDate(education.getRecruitmentStartDate())
                         .recruitmentEndDate(education.getRecruitmentEndDate())
                         .price(education.getPrice())
-                        .preFile(education.getEducationPreImage())
-                        .detailFile(education.getEducationDetailImage())
+                        .preFile(preImage)
+                        .detailFile(detailImage)
                         .build();
         }
 }
