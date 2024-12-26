@@ -1,6 +1,7 @@
 package angel_bridge.angel_bridge_server.domain.education.service;
 
-import angel_bridge.angel_bridge_server.domain.education.dto.RecommendationProgramResponse;
+import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationDetailResponseDto;
+import angel_bridge.angel_bridge_server.domain.education.dto.response.RecommendationProgramResponse;
 import angel_bridge.angel_bridge_server.domain.education.dto.request.AdminEducationRequestDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.AdminEducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.ProgramResponseDto;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -174,5 +174,12 @@ public class EducationService {
         return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.UPCOMING, pageable)
                 .map(ProgramResponseDto::from)
                 .stream().toList();
+    }
+
+    // [GET] 일반 사용자 프로그램 상세 페이지 조회
+    public EducationDetailResponseDto getProgramDetail(Long educationId) {
+
+        Education education = findEducationById(educationId);
+        return EducationDetailResponseDto.from(education);
     }
 }
