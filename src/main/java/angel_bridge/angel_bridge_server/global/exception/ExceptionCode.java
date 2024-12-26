@@ -33,6 +33,7 @@ public enum ExceptionCode {
     EXPIRED_PERIOD_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, 3008,"기한이 만료된 RefreshToken 입니다."),
     EXPIRED_PERIOD_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, 3009,"기한이 만료된 AccessToken 입니다."),
     NOT_FOUND_REFRESH_TOKEN_IN_DB(HttpStatus.NOT_FOUND, 3010,"현재 DB에 존재하지 않는 RefreshToken 입니다."),
+    NOT_FOUND_USER(HttpStatus.NOT_FOUND, 3011,"존재하지 않는 사용자입니다."),
 
     // 4000: image file Error
     EMPTY_FILE_EXCEPTION(HttpStatus.BAD_REQUEST, 4001, "파일이 비어 있습니다."),
