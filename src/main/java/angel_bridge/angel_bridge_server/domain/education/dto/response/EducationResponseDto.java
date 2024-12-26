@@ -19,7 +19,7 @@ public record EducationResponseDto(
         @Schema(description = "제목", example = "예비 창업 패키지 2주 완성")
         String title,
 
-        @Schema(description = "모집 여부", example = "모집중")
+        @Schema(description = "모집 여부", example = "모집중 | 모집예정 | 모집종료")
         String recruitmentStatus
 ) {
 
