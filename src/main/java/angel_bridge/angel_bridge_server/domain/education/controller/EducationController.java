@@ -1,6 +1,7 @@
 package angel_bridge.angel_bridge_server.domain.education.controller;
 
-import angel_bridge.angel_bridge_server.domain.education.dto.RecommendationProgramResponse;
+import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationDetailResponseDto;
+import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.service.EducationService;
 import angel_bridge.angel_bridge_server.global.common.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
