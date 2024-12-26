@@ -1,7 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.education.controller;
 
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationDetailResponseDto;
-import angel_bridge.angel_bridge_server.domain.education.dto.response.RecommendationProgramResponse;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.ProgramResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.service.EducationService;
 import angel_bridge.angel_bridge_server.global.common.response.CommonResponse;
@@ -25,7 +24,7 @@ public class EducationController {
 
     @Operation(summary = "추천 프로그램 조회", description = "3개의 추천 프로그램 조회하는 API")
     @GetMapping("/recommendations")
-    public CommonResponse<List<RecommendationProgramResponse>> getRecommendationProgram() {
+    public CommonResponse<List<ProgramResponseDto>> getRecommendationProgram() {
 
         return new CommonResponse<>(educationService.getRecommendationProgram(), "추천 프로그램 조회에 성공하였습니다.");
     }
