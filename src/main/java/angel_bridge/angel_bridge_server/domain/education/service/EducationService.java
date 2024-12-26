@@ -21,8 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.IMAGE_UPLOAD_ERROR;
-import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.NOT_FOUND_EDUCATION_ID;
+import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.*;
 
 @Service
 @Slf4j
@@ -150,6 +149,8 @@ public class EducationService {
     // [GET] 일반 사용자 전체 프로그램 조회
     public List<EducationResponseDto> getAllProgram(int page) {
 
+        if (page == 0)
+            throw new ApplicationException(BAD_REQUEST_ERROR);
         Pageable pageable = PageRequest.of(page - 1, 12);
 
         return educationRepository.findAll(pageable)
@@ -161,7 +162,10 @@ public class EducationService {
     // [GET] 일반 사용자 모집 중인 전체 프로그램 조회
     public List<EducationResponseDto> getAllOngoingProgram(int page) {
 
+        if (page == 0)
+            throw new ApplicationException(BAD_REQUEST_ERROR);
         Pageable pageable = PageRequest.of(page - 1, 12);
+
         return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.ONGOING, pageable)
                 .map(education -> EducationResponseDto.from(
                         education, imageService.getImageUrl(education.getEducationPreImage())))
@@ -171,7 +175,10 @@ public class EducationService {
     // [GET] 일반 사용자 모집 예정인 전체 프로그램 조회
     public List<EducationResponseDto> getAllUpcomingProgram(int page) {
 
+        if (page == 0)
+            throw new ApplicationException(BAD_REQUEST_ERROR);
         Pageable pageable = PageRequest.of(page - 1, 12);
+
         return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.UPCOMING, pageable)
                 .map(education -> EducationResponseDto.from(
                         education, imageService.getImageUrl(education.getEducationPreImage())))
