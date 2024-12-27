@@ -1,8 +1,9 @@
 package angel_bridge.angel_bridge_server.domain.education.service;
 
-import angel_bridge.angel_bridge_server.domain.education.dto.response.RecommendationProgramResponse;
+import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationDetailResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.request.AdminEducationRequestDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.AdminEducationResponseDto;
+import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
 import angel_bridge.angel_bridge_server.domain.education.entity.RecruitmentStatus;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
@@ -10,6 +11,8 @@ import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
 import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,8 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.IMAGE_UPLOAD_ERROR;
-import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.NOT_FOUND_EDUCATION_ID;
+import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.*;
 
 @Service
 @Slf4j
@@ -31,7 +33,7 @@ public class EducationService {
     private final EducationRepository educationRepository;
 
     // [GET] 일반 사용자 추천 교육 프로그램 조회
-    public List<RecommendationProgramResponse> getRecommendationProgram() {
+    public List<EducationResponseDto> getRecommendationProgram() {
 
         // 모집 중인 프로그램 (마감 기간이 가까운 순으로 정렬)
         List<Education> ongoingEducations
@@ -42,9 +44,9 @@ public class EducationService {
                 = educationRepository.findEducationsByStatus(RecruitmentStatus.UPCOMING);
 
         // 모집 중인 프로그램에서 최대 3개 선택
-        List<RecommendationProgramResponse> responses = ongoingEducations.stream()
+        List<EducationResponseDto> responses = ongoingEducations.stream()
                 .limit(3)
-                .map(education -> RecommendationProgramResponse.from(
+                .map(education -> EducationResponseDto.from(
                         education, imageService.getImageUrl(education.getEducationPreImage())
                 ))
                 .collect(Collectors.toList());
@@ -52,9 +54,9 @@ public class EducationService {
         // 모집 중인 프로그램에서 부족한 경우, 모집 예정인 프로그램에서 추가 선택
         int remaining = 3 - responses.size();
         if (remaining > 0) {
-            List<RecommendationProgramResponse> upcomingResponses = upcomingEducations.stream()
+            List<EducationResponseDto> upcomingResponses = upcomingEducations.stream()
                     .limit(remaining)
-                    .map(education -> RecommendationProgramResponse.from(
+                    .map(education -> EducationResponseDto.from(
                             education, imageService.getImageUrl(education.getEducationPreImage())
                     ))
                     .toList();
@@ -142,5 +144,51 @@ public class EducationService {
         }
 
         educationRepository.delete(education);
+    }
+
+    // [GET] 일반 사용자 전체 프로그램 조회
+    public List<EducationResponseDto> getAllProgram(int page) {
+
+        if (page == 0)
+            throw new ApplicationException(BAD_REQUEST_ERROR);
+        Pageable pageable = PageRequest.of(page - 1, 12);
+
+        return educationRepository.findAll(pageable)
+                .map(education -> EducationResponseDto.from(
+                                education, imageService.getImageUrl(education.getEducationPreImage())))
+                .stream().toList();
+    }
+
+    // [GET] 일반 사용자 모집 중인 전체 프로그램 조회
+    public List<EducationResponseDto> getAllOngoingProgram(int page) {
+
+        if (page == 0)
+            throw new ApplicationException(BAD_REQUEST_ERROR);
+        Pageable pageable = PageRequest.of(page - 1, 12);
+
+        return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.ONGOING, pageable)
+                .map(education -> EducationResponseDto.from(
+                        education, imageService.getImageUrl(education.getEducationPreImage())))
+                .stream().toList();
+    }
+
+    // [GET] 일반 사용자 모집 예정인 전체 프로그램 조회
+    public List<EducationResponseDto> getAllUpcomingProgram(int page) {
+
+        if (page == 0)
+            throw new ApplicationException(BAD_REQUEST_ERROR);
+        Pageable pageable = PageRequest.of(page - 1, 12);
+
+        return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.UPCOMING, pageable)
+                .map(education -> EducationResponseDto.from(
+                        education, imageService.getImageUrl(education.getEducationPreImage())))
+                .stream().toList();
+    }
+
+    // [GET] 일반 사용자 프로그램 상세 페이지 조회
+    public EducationDetailResponseDto getEducationDetail(Long educationId) {
+
+        Education education = findEducationById(educationId);
+        return EducationDetailResponseDto.from(education, education.getEducationPreImage(), education.getEducationDetailImage());
     }
 }
