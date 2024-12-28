@@ -91,8 +91,7 @@ public class SecurityConfig {
                     
                         // 임시
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-
-                        .requestMatchers("/api/auth/reissue").permitAll()
+                        .requestMatchers("/api/v1/**").permitAll()
                         .requestMatchers("/hc", "/env", "/").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated());
