@@ -191,4 +191,38 @@ public class EducationService {
         Education education = findEducationById(educationId);
         return EducationDetailResponseDto.from(education, education.getEducationPreImage(), education.getEducationDetailImage());
     }
+
+    // [GET] 프로그램 검색 조회
+    public List<EducationResponseDto> searchEducationByTitle(String keyword, int page, String status) {
+
+        if (page == 0)
+            throw new ApplicationException(BAD_REQUEST_ERROR);
+
+        Pageable pageable = PageRequest.of(page - 1, 12);
+
+        // 1. 전체 리스트에서 검색하는 경우
+        if (status.equals("ALL")) {
+            return educationRepository.findByTitle(keyword, pageable)
+                    .map(education -> EducationResponseDto.from(
+                            education, imageService.getImageUrl(education.getEducationPreImage())))
+                    .stream().toList();
+
+            // 2. 모집중인 리스트에서 검색하는 경우
+        } else if (status.equals("ONGOING")) {
+            return educationRepository.findByTitleAndStatus(keyword, RecruitmentStatus.ONGOING, pageable)
+                    .map(education -> EducationResponseDto.from(
+                            education, imageService.getImageUrl(education.getEducationPreImage())))
+                    .stream().toList();
+
+            // 3. 모집예정인 리스트에서 검색하는 경우
+        } else if (status.equals("UPCOMING")) {
+            return educationRepository.findByTitleAndStatus(keyword, RecruitmentStatus.UPCOMING, pageable)
+                    .map(education -> EducationResponseDto.from(
+                            education, imageService.getImageUrl(education.getEducationPreImage())))
+                    .stream().toList();
+
+        } else {
+            throw new ApplicationException(BAD_REQUEST_ERROR);
+        }
+    }
 }
