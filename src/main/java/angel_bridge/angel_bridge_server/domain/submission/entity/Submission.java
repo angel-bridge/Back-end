@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,14 +23,21 @@ public class Submission extends BaseEntity {
     @Column(name = "submission_link")
     private String submissionLink;
 
-    @Column(name = "is_completed", length = 10)
-    private Boolean isCompleted;
+    @Column(name = "submission_time")
+    private LocalDateTime submissionTime;
+
+    @Column(name = "is_completed", nullable = false)
+    private Boolean isCompleted = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "attendance_status", length = 10, nullable = false)
+    private AttendanceStatus attendanceStatus = AttendanceStatus.PENDING;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignment_id")
     private Assignment assignment;
 
