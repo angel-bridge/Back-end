@@ -37,6 +37,9 @@ public class Assignment extends BaseEntity {
     @Column(name = "assignment_link", nullable = false)
     private String assignmentLink;
 
+    @Column(name = "assignment_round")
+    private Integer assignmentRound;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "education_id")
     private Education education;
@@ -46,12 +49,13 @@ public class Assignment extends BaseEntity {
     }
 
     @Builder
-    public Assignment(LocalDateTime assignmentStartTime, LocalDateTime assignmentEndTime, String assignmentTitle, String assignmentDescription, String assignmentLink, Education education) {
+    public Assignment(LocalDateTime assignmentStartTime, LocalDateTime assignmentEndTime, String assignmentTitle, String assignmentDescription, String assignmentLink, Integer assignmentRound, Education education) {
         this.assignmentStartTime = assignmentStartTime;
         this.assignmentEndTime = assignmentEndTime;
         this.assignmentTitle = assignmentTitle;
         this.assignmentDescription = assignmentDescription;
         this.assignmentLink = assignmentLink;
+        this.assignmentRound = assignmentRound;
         this.education = education;
     }
 }
