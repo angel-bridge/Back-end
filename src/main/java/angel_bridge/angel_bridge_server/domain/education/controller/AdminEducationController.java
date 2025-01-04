@@ -1,5 +1,8 @@
 package angel_bridge.angel_bridge_server.domain.education.controller;
 
+import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AssignmentRequestDto;
+import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentResponseDto;
+import angel_bridge.angel_bridge_server.domain.assignment.service.AssignmentService;
 import angel_bridge.angel_bridge_server.domain.education.dto.request.AdminEducationRequestDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.AdminEducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.service.EducationService;
@@ -11,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/admin/education")
 @RequiredArgsConstructor
@@ -18,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class AdminEducationController {
 
     private final EducationService educationService;
+    private final AssignmentService assignmentService;
 
     @Operation(summary = "교육프로그램 생성", description = "하나의 교육프로그램을 생성하는 API")
     @PostMapping
@@ -39,5 +45,12 @@ public class AdminEducationController {
 
         educationService.deleteEducation(educationId);
         return new CommonResponse<>("해당 교육프로그램 삭제에 성공하였습니다.");
+    }
+
+    @Operation(summary = "교육프로그램 미션 생성", description = "특정 교육프로그램 미션들을 생성하는 API")
+    @PostMapping("/{educationId}/assignments")
+    public CommonResponse<AssignmentResponseDto> createAssignments(@PathVariable Long educationId, @Valid @RequestBody AssignmentRequestDto request) {
+
+        return new CommonResponse<>(assignmentService.createAssignments(educationId, request), "하나의 미션 생성에 성공하였습니다.");
     }
 }
