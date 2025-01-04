@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
-    boolean existsByEducationIdAndAssignmentRound(Long educationId, Integer round);
+    boolean existsByEducationIdAndAssignmentRoundAndDeletedAtIsNull(Long educationId, Integer round);
 }

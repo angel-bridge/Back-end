@@ -37,7 +37,7 @@ public class AssignmentService {
         Education education = findEducationById(educationId);
 
         // 동일한 회차를 입력할 경우 예외처리
-        if (assignmentRepository.existsByEducationIdAndAssignmentRound(educationId, request.round())) {
+        if (assignmentRepository.existsByEducationIdAndAssignmentRoundAndDeletedAtIsNull(educationId, request.round())) {
             throw new ApplicationException(ALREADY_EXIST_ASSIGNMENT_ROUND_EXCEPTION);
         }
         Assignment saveAssignment = assignmentRepository.save(request.toEntity(education));
