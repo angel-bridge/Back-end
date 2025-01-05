@@ -11,7 +11,6 @@ public record AssignmentResponseDto(
 
         Long assignmentId,
 
-        @Schema(example = "오늘의 미션 회차")
         int assignmentRound,
 
         String educationTitle,
@@ -24,10 +23,10 @@ public record AssignmentResponseDto(
 
         int performanceRate,
 
-        @Schema(example = "'공지사항' 링크")
+        @Schema(example = "공지사항 링크")
         String noticeLink,
 
-        @Schema(example = "'인증방법' 링크")
+        @Schema(example = "인증방법 링크")
         String methodLink,
 
         @Schema(example = "교육 프로그램 진행 여부")

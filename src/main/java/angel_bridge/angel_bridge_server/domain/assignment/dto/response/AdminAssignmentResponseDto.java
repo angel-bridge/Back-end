@@ -3,6 +3,7 @@ package angel_bridge.angel_bridge_server.domain.assignment.dto.response;
 import angel_bridge.angel_bridge_server.domain.assignment.entity.Assignment;
 import angel_bridge.angel_bridge_server.domain.assignment.entity.AssignmentStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ public record AdminAssignmentResponseDto(
 
         String assignmentLink,
 
+        @Schema(example = "과거회차 | 오늘회차 | 공개예정회차")
         String assignmentStatus
 ) {
     public static AdminAssignmentResponseDto from(Assignment assignment, AssignmentStatus status) {
