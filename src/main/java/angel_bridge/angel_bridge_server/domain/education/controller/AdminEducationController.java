@@ -1,7 +1,7 @@
 package angel_bridge.angel_bridge_server.domain.education.controller;
 
-import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AssignmentRequestDto;
-import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentResponseDto;
+import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AdminAssignmentRequestDto;
+import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AdminAssignmentResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.service.AssignmentService;
 import angel_bridge.angel_bridge_server.domain.education.dto.request.AdminEducationRequestDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.AdminEducationResponseDto;
@@ -13,8 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin/education")
@@ -49,14 +47,14 @@ public class AdminEducationController {
 
     @Operation(summary = "교육프로그램 미션 생성", description = "특정 교육프로그램 미션을 생성하는 API")
     @PostMapping("/{educationId}/assignment")
-    public CommonResponse<AssignmentResponseDto> createAssignment(@PathVariable Long educationId, @Valid @RequestBody AssignmentRequestDto request) {
+    public CommonResponse<AdminAssignmentResponseDto> createAssignment(@PathVariable Long educationId, @Valid @RequestBody AdminAssignmentRequestDto request) {
 
         return new CommonResponse<>(assignmentService.createAssignment(educationId, request), "하나의 미션 생성에 성공하였습니다.");
     }
 
     @Operation(summary = "교육프로그램 미션 수정", description = "특정 교육프로그램 미션을 수정하는 API")
     @PutMapping("/{educationId}/assignment/{assignmentId}")
-    public CommonResponse<AssignmentResponseDto> updateAssignment(@PathVariable Long educationId, @PathVariable Long assignmentId, @Valid @RequestBody AssignmentRequestDto request) {
+    public CommonResponse<AdminAssignmentResponseDto> updateAssignment(@PathVariable Long educationId, @PathVariable Long assignmentId, @Valid @RequestBody AdminAssignmentRequestDto request) {
 
         return new CommonResponse<>(assignmentService.updateAssignment(educationId, assignmentId, request), "해당 미션 수정에 성공하였습니다.");
     }

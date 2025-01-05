@@ -7,7 +7,7 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Builder
-public record AssignmentResponseDto(
+public record AdminAssignmentResponseDto(
 
         Long assignmentId,
 
@@ -27,9 +27,9 @@ public record AssignmentResponseDto(
 
         String assignmentLink
 ) {
-    public static AssignmentResponseDto from(Assignment assignment) {
+    public static AdminAssignmentResponseDto from(Assignment assignment) {
 
-        return AssignmentResponseDto.builder()
+        return AdminAssignmentResponseDto.builder()
                 .assignmentId(assignment.getId())
                 .educationId(assignment.getEducation().getId())
                 .startTime(assignment.getAssignmentStartTime())

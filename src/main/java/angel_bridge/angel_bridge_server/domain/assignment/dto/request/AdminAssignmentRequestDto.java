@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
-public record AssignmentRequestDto(
+public record AdminAssignmentRequestDto(
         @NotNull
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
         @Schema(description = "미션 시작일", example = "2025-01-01T00:00")

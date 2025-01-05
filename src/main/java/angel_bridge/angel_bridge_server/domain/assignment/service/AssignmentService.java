@@ -1,7 +1,7 @@
 package angel_bridge.angel_bridge_server.domain.assignment.service;
 
-import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AssignmentRequestDto;
-import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentResponseDto;
+import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AdminAssignmentRequestDto;
+import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AdminAssignmentResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.entity.Assignment;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.*;
 
@@ -80,7 +79,7 @@ public class AssignmentService {
 
     // [POST] 어드민 회차별 미션 생성
     @Transactional
-    public AssignmentResponseDto createAssignment(Long educationId, AssignmentRequestDto request) {
+    public AdminAssignmentResponseDto createAssignment(Long educationId, AdminAssignmentRequestDto request) {
 
         Education education = findEducationById(educationId);
 
@@ -89,12 +88,12 @@ public class AssignmentService {
 
         Assignment saveAssignment = assignmentRepository.save(request.toEntity(education));
 
-        return AssignmentResponseDto.from(saveAssignment);
+        return AdminAssignmentResponseDto.from(saveAssignment);
     }
 
     // [PUT] 어드민 회차별 미션 수정
     @Transactional
-    public AssignmentResponseDto updateAssignment(Long educationId, Long assignmentId, AssignmentRequestDto request) {
+    public AdminAssignmentResponseDto updateAssignment(Long educationId, Long assignmentId, AdminAssignmentRequestDto request) {
 
         Assignment assignment = findAssignmentById(assignmentId);
 
@@ -104,7 +103,7 @@ public class AssignmentService {
 
         assignment.update(request);
 
-        return AssignmentResponseDto.from(assignment);
+        return AdminAssignmentResponseDto.from(assignment);
     }
 
     // [DELETE] 어드민 회차별 미션 삭제

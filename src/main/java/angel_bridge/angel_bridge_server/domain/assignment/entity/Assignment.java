@@ -1,6 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.assignment.entity;
 
-import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AssignmentRequestDto;
+import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AdminAssignmentRequestDto;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
 import angel_bridge.angel_bridge_server.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -10,9 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -51,7 +49,7 @@ public class Assignment extends BaseEntity {
         return !submissionTime.isBefore(assignmentStartTime) && !submissionTime.isAfter(assignmentEndTime);
     }
 
-    public void update(AssignmentRequestDto request) {
+    public void update(AdminAssignmentRequestDto request) {
         this.assignmentStartTime = request.startTime();
         this.assignmentEndTime = request.endTime();
         this.assignmentRound = request.round();
