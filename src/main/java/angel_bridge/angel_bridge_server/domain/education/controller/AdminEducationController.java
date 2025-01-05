@@ -47,10 +47,17 @@ public class AdminEducationController {
         return new CommonResponse<>("해당 교육프로그램 삭제에 성공하였습니다.");
     }
 
-    @Operation(summary = "교육프로그램 미션 생성", description = "특정 교육프로그램 미션들을 생성하는 API")
-    @PostMapping("/{educationId}/assignments")
-    public CommonResponse<AssignmentResponseDto> createAssignments(@PathVariable Long educationId, @Valid @RequestBody AssignmentRequestDto request) {
+    @Operation(summary = "교육프로그램 미션 생성", description = "특정 교육프로그램 미션을 생성하는 API")
+    @PostMapping("/{educationId}/assignment")
+    public CommonResponse<AssignmentResponseDto> createAssignment(@PathVariable Long educationId, @Valid @RequestBody AssignmentRequestDto request) {
 
-        return new CommonResponse<>(assignmentService.createAssignments(educationId, request), "하나의 미션 생성에 성공하였습니다.");
+        return new CommonResponse<>(assignmentService.createAssignment(educationId, request), "하나의 미션 생성에 성공하였습니다.");
+    }
+
+    @Operation(summary = "교육프로그램 미션 수정", description = "특정 교육프로그램 미션을 수정하는 API")
+    @PutMapping("/{educationId}/assignment/{assignmentId}")
+    public CommonResponse<AssignmentResponseDto> updateAssignment(@PathVariable Long educationId, @PathVariable Long assignmentId, @Valid @RequestBody AssignmentRequestDto request) {
+
+        return new CommonResponse<>(assignmentService.updateAssignment(educationId, assignmentId, request), "해당 미션 수정에 성공하였습니다.");
     }
 }

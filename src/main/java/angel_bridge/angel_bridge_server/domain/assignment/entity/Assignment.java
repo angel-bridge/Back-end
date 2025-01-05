@@ -1,5 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.assignment.entity;
 
+import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AssignmentRequestDto;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
 import angel_bridge.angel_bridge_server.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -46,6 +47,15 @@ public class Assignment extends BaseEntity {
 
     public boolean isSubmissionValid(LocalDateTime submissionTime) {
         return !submissionTime.isBefore(assignmentStartTime) && !submissionTime.isAfter(assignmentEndTime);
+    }
+
+    public void update(AssignmentRequestDto request) {
+        this.assignmentStartTime = request.startTime();
+        this.assignmentEndTime = request.endTime();
+        this.assignmentRound = request.round();
+        this.assignmentTitle = request.title();
+        this.assignmentDescription = request.description();
+        this.assignmentLink = request.assignmentLink();
     }
 
     @Builder
