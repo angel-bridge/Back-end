@@ -51,7 +51,8 @@ public enum ExceptionCode {
     NOT_FOUND_ASSIGNMENT_ID(HttpStatus.NOT_FOUND, 5006,"존재하지 않는 미션입니다."),
     INVALID_EDUCATION_ID_ASSIGNMENT(HttpStatus.BAD_REQUEST, 5007, "부합하지 않는 교육 프로그램 ID 입니다."),
     INVALID_DATE_RANGE_EXCEPTION(HttpStatus.BAD_REQUEST, 5008, "올바르지 않은 미션 기간입니다."),
-    NOT_FOUND_EDUCATION_ASSIGNMENT(HttpStatus.NOT_FOUND, 5009,"존재하지 않는 교육프로그램 미션입니다.");
+    NOT_FOUND_EDUCATION_ASSIGNMENT(HttpStatus.NOT_FOUND, 5009,"존재하지 않는 교육프로그램 미션입니다."),
+    SUBMISSION_NOT_FOUND(HttpStatus.NOT_FOUND, 5010,"해당 제출을 찾을 수 없습니다.");
 
     // 6000: [임의] Error
 

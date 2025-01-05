@@ -1,5 +1,6 @@
 package angel_bridge.angel_bridge_server.domain.education.controller;
 
+import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentDetailResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentListResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentPagedResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentResponseDto;
@@ -8,6 +9,7 @@ import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationD
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.service.EducationService;
 import angel_bridge.angel_bridge_server.domain.submission.dto.response.SubmissionResponseDto;
+import angel_bridge.angel_bridge_server.domain.submission.entity.AttendanceStatus;
 import angel_bridge.angel_bridge_server.global.common.response.CommonResponse;
 import angel_bridge.angel_bridge_server.global.oauth2.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -94,5 +96,21 @@ public class EducationController {
         Long memberId = userDetails.getMemberId();
 
         return new CommonResponse<>(assignmentService.getAllAssignments(educationId, page, memberId), "미션 제출 현황 리스트 조회에 성공하였습니다.");
+    }
+
+    @Operation(summary = "개별 미션 조회", description = "특정 회차의 미션을 개별 조회하는 API")
+    @GetMapping("/{educationId}/assignment/{assignmentId}")
+    public CommonResponse<AssignmentDetailResponseDto> getAssignmentInfo(@PathVariable Long educationId, @PathVariable Long assignmentId, @AuthenticationPrincipal CustomOAuth2User userDetails, @Parameter(
+            examples = {
+                    @ExampleObject(name = "출석인 경우", value = "ONTIME"),
+                    @ExampleObject(name = "지각인 경우", value = "LATE"),
+                    @ExampleObject(name = "결석인 경우", value = "ABSENT"),
+                    @ExampleObject(name = "오늘 회차이고 미제출인 경우", value = "PENDING"),
+            }
+    ) @RequestParam String status) {
+
+        Long memberId = userDetails.getMemberId();
+
+        return new CommonResponse<>(assignmentService.getAssignmentInfo(educationId, assignmentId, memberId, status), "개별 미션 조회에 성공하였습니다.");
     }
 }

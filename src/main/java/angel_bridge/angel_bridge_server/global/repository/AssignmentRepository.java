@@ -15,7 +15,11 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
     boolean existsByEducationIdAndAssignmentRoundAndDeletedAtIsNull(Long educationId, int round);
 
-    Optional<Assignment> findByIdAndDeletedAtIsNull(Long assignmentId);
+    @Query("SELECT a FROM Assignment a " +
+            "WHERE a.id = :id " +
+            "AND a.education.id = :educationId " +
+            "AND a.deletedAt IS NULL")
+    Optional<Assignment> findByIdAndEducationIdAndDeletedAtIsNull(Long id, Long educationId);
 
     @Query("SELECT MIN(a.assignmentStartTime) FROM Assignment a " +
             "WHERE a.education.id = :educationId " +

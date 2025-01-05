@@ -1,16 +1,14 @@
 package angel_bridge.angel_bridge_server.domain.assignment.service;
 
 import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AdminAssignmentRequestDto;
-import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AdminAssignmentResponseDto;
-import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentListResponseDto;
-import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentPagedResponseDto;
-import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentResponseDto;
+import angel_bridge.angel_bridge_server.domain.assignment.dto.response.*;
 import angel_bridge.angel_bridge_server.domain.assignment.entity.Assignment;
 import angel_bridge.angel_bridge_server.domain.assignment.entity.AssignmentStatus;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
 import angel_bridge.angel_bridge_server.domain.submission.dto.response.SubmissionResponseDto;
 import angel_bridge.angel_bridge_server.domain.submission.entity.AttendanceStatus;
+import angel_bridge.angel_bridge_server.domain.submission.entity.Submission;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.AssignmentRepository;
 import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
@@ -43,8 +41,8 @@ public class AssignmentService {
         return educationRepository.findByIdAndDeletedAtIsNull(educationId).orElseThrow(() -> new ApplicationException(NOT_FOUND_EDUCATION_ID));
     }
 
-    public Assignment findAssignmentById(Long assignmentId) {
-        return assignmentRepository.findByIdAndDeletedAtIsNull(assignmentId).orElseThrow(() -> new ApplicationException(NOT_FOUND_ASSIGNMENT_ID));
+    public Assignment findAssignmentById(Long assignmentId, Long educationId) {
+        return assignmentRepository.findByIdAndEducationIdAndDeletedAtIsNull(assignmentId, educationId).orElseThrow(() -> new ApplicationException(NOT_FOUND_ASSIGNMENT_ID));
     }
 
     /**
@@ -79,15 +77,6 @@ public class AssignmentService {
                 && (assignment == null || assignment.getAssignmentRound() != round);
         if (isDuplicateRound) {
             throw new ApplicationException(ALREADY_EXIST_ASSIGNMENT_ROUND_EXCEPTION);
-        }
-    }
-
-    /**
-     * 수정하고자 하는 미션의 교육 프로그램 ID 부합 검사
-     */
-    private void validateEducationId(Assignment assignment, Long educationId) {
-        if (!assignment.getEducation().getId().equals(educationId)) {
-            throw new ApplicationException(INVALID_EDUCATION_ID_ASSIGNMENT);
         }
     }
 
@@ -146,9 +135,8 @@ public class AssignmentService {
     @Transactional
     public AdminAssignmentResponseDto updateAssignment(Long educationId, Long assignmentId, AdminAssignmentRequestDto request) {
 
-        Assignment assignment = findAssignmentById(assignmentId);
+        Assignment assignment = findAssignmentById(assignmentId, educationId);
 
-        validateEducationId(assignment, educationId);
         validateDuplicateRound(educationId, assignment, request.round());
         validateDateRange(educationId, request.round(), request.startTime(), request.endTime());
 
@@ -162,9 +150,7 @@ public class AssignmentService {
     @Transactional
     public void deleteAssignment(Long educationId, Long assignmentId) {
 
-        Assignment assignment = findAssignmentById(assignmentId);
-
-        validateEducationId(assignment, educationId);
+        Assignment assignment = findAssignmentById(assignmentId, educationId);
 
         assignmentRepository.delete(assignment);
     }
@@ -210,5 +196,19 @@ public class AssignmentService {
                 assignmentPage.getTotalPages(),
                 assignments
         );
+    }
+
+    // [GET] 개별 미션 조회
+    public AssignmentDetailResponseDto getAssignmentInfo(Long educationId, Long assignmentId, Long memberId, String status) {
+
+        Assignment assignment = findAssignmentById(assignmentId, educationId);
+
+        Submission submission = null;
+        if (status.equals("ONTIME") || status.equals("LATE")) {
+            submission = submissionRepository.findByAssignmentIdAndMemberId(assignmentId, memberId)
+                    .orElseThrow(() -> new ApplicationException(SUBMISSION_NOT_FOUND));
+        }
+
+        return AssignmentDetailResponseDto.from(assignment, submission);
     }
 }
