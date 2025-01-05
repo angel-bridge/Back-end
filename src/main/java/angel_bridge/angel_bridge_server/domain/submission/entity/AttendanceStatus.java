@@ -7,10 +7,10 @@ import lombok.ToString;
 @ToString
 public enum AttendanceStatus {
 
-    ON_TIME("출석"),
-    LATE("지각"),
-    ABSENT("결석"),
-    PENDING("미제출");
+    ON_TIME("ONTIME"),
+    LATE("LATE"),
+    ABSENT("ABSENT"),
+    PENDING("PENDING");
 
     private final String description;
 

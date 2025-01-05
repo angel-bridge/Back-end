@@ -21,7 +21,7 @@ public record AssignmentListResponseDto(
         @Schema(example = "과거회차 | 오늘회차 | 공개예정회차")
         String assignmentStatus,
 
-        @Schema(example = "출석 | 지각 | 결석 | 미제출")
+        @Schema(example = "ONTIME | LATE | ABSENT | PENDING")
         String attendanceStatus
 ) {
     public static AssignmentListResponseDto from(Assignment assignment, AssignmentStatus assignmentStatus, AttendanceStatus attendanceStatus) {
