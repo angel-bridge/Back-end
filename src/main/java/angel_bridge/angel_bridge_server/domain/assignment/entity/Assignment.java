@@ -2,6 +2,7 @@ package angel_bridge.angel_bridge_server.domain.assignment.entity;
 
 import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AdminAssignmentRequestDto;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
+import angel_bridge.angel_bridge_server.domain.submission.entity.AttendanceStatus;
 import angel_bridge.angel_bridge_server.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -39,14 +40,20 @@ public class Assignment extends BaseEntity {
     private String assignmentLink;
 
     @Column(name = "assignment_round")
-    private Integer assignmentRound;
+    private int assignmentRound;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "education_id")
     private Education education;
 
-    public boolean isSubmissionValid(LocalDateTime submissionTime) {
-        return !submissionTime.isBefore(assignmentStartTime) && !submissionTime.isAfter(assignmentEndTime);
+    public AssignmentStatus getStatus(LocalDateTime now) {
+        if (assignmentEndTime.isBefore(now)) {
+            return AssignmentStatus.PAST;
+        } else if (!assignmentStartTime.isAfter(now) && !assignmentEndTime.isBefore(now)) {
+            return AssignmentStatus.CURRENT;
+        } else {
+            return AssignmentStatus.UPCOMING;
+        }
     }
 
     public void update(AdminAssignmentRequestDto request) {
@@ -59,7 +66,7 @@ public class Assignment extends BaseEntity {
     }
 
     @Builder
-    public Assignment(LocalDateTime assignmentStartTime, LocalDateTime assignmentEndTime, String assignmentTitle, String assignmentDescription, String assignmentLink, Integer assignmentRound, Education education) {
+    public Assignment(LocalDateTime assignmentStartTime, LocalDateTime assignmentEndTime, String assignmentTitle, String assignmentDescription, String assignmentLink, int assignmentRound, Education education) {
         this.assignmentStartTime = assignmentStartTime;
         this.assignmentEndTime = assignmentEndTime;
         this.assignmentTitle = assignmentTitle;
