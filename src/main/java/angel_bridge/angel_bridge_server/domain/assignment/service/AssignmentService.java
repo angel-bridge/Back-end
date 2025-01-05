@@ -106,4 +106,15 @@ public class AssignmentService {
 
         return AssignmentResponseDto.from(assignment);
     }
+
+    // [DELETE] 어드민 회차별 미션 삭제
+    @Transactional
+    public void deleteAssignment(Long educationId, Long assignmentId) {
+
+        Assignment assignment = findAssignmentById(assignmentId);
+
+        validateEducationId(assignment, educationId);
+
+        assignmentRepository.delete(assignment);
+    }
 }

@@ -60,4 +60,12 @@ public class AdminEducationController {
 
         return new CommonResponse<>(assignmentService.updateAssignment(educationId, assignmentId, request), "해당 미션 수정에 성공하였습니다.");
     }
+
+    @Operation(summary = "교육프로그램 미션 삭제", description = "특정 교육프로그램 미션을 삭제하는 API")
+    @DeleteMapping("/{educationId}/assignment/{assignmentId}")
+    public CommonResponse<Void> deleteAssignment(@PathVariable Long educationId, @PathVariable Long assignmentId) {
+
+        assignmentService.deleteAssignment(educationId, assignmentId);
+        return new CommonResponse<>("해당 교육프로그램의 미션 삭제에 성공하였습니다.");
+    }
 }
