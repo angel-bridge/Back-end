@@ -21,7 +21,7 @@ public record AdminAssignmentRequestDto(
 
         @NotNull
         @Schema(description = "미션 회차", example = "1")
-        Integer round,
+        int round,
 
         @Schema(description = "미션 제목", example = "창업아이템 배경 및 필요성")
         String title,

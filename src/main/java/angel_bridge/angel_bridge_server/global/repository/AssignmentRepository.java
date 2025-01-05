@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
-    boolean existsByEducationIdAndAssignmentRoundAndDeletedAtIsNull(Long educationId, Integer round);
+    boolean existsByEducationIdAndAssignmentRoundAndDeletedAtIsNull(Long educationId, int round);
 
     Optional<Assignment> findByIdAndDeletedAtIsNull(Long assignmentId);
 
@@ -18,11 +19,18 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             "WHERE a.education.id = :educationId " +
             "AND a.assignmentRound > :round " +
             "AND a.deletedAt IS NULL")
-    LocalDateTime findEarliestStartDateForNextRounds(@Param("educationId") Long educationId, @Param("round") Integer round);
+    LocalDateTime findEarliestStartDateForNextRounds(@Param("educationId") Long educationId, @Param("round") int round);
 
     @Query("SELECT MAX(a.assignmentEndTime) FROM Assignment a " +
             "WHERE a.education.id = :educationId " +
             "AND a.assignmentRound < :round " +
             "AND a.deletedAt IS NULL")
-    LocalDateTime findLatestEndTimeForBeforeRounds(@Param("educationId") Long educationId, @Param("round") Integer round);
+    LocalDateTime findLatestEndTimeForBeforeRounds(@Param("educationId") Long educationId, @Param("round") int round);
+
+    @Query("SELECT a FROM Assignment a " +
+            "WHERE a.education.id = :educationId " +
+            "AND a.deletedAt IS NULL " +
+            "AND a.assignmentStartTime <= :now " +
+            "AND a.assignmentEndTime >= :now")
+    Optional<Assignment> findCurrentAssignmentByEducationId(@Param("educationId") Long educationId, @Param("now") LocalDateTime now);
 }

@@ -1,5 +1,7 @@
 package angel_bridge.angel_bridge_server.domain.education.controller;
 
+import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentResponseDto;
+import angel_bridge.angel_bridge_server.domain.assignment.service.AssignmentService;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationDetailResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.service.EducationService;
@@ -20,7 +22,8 @@ import java.util.List;
 @Tag(name = "USER_Education", description = "USER 교육 프로그램 관련 API")
 public class EducationController {
 
-    private EducationService educationService;
+    private final EducationService educationService;
+    private final AssignmentService assignmentService;
 
     @Operation(summary = "추천 프로그램 조회", description = "3개의 추천 프로그램 조회하는 API")
     @GetMapping("/recommendations")
@@ -68,5 +71,12 @@ public class EducationController {
     ) @RequestParam(defaultValue = "ALL") String status) {
 
         return new CommonResponse<>(educationService.searchEducationByTitle(keyword, page, status), "해당 keyword에 대한 교육 프로그램 조회에 성공하였습니다.");
+    }
+
+    @Operation(summary = "미션 설명박스 조회", description = "미션 수행 현황의 상위 박스 정보를 조회하는 API")
+    @GetMapping("/{educationId}/assignment")
+    public CommonResponse<AssignmentResponseDto> getAssignmentBox(@PathVariable Long educationId) {
+
+        return new CommonResponse<>(assignmentService.getAssignmentBox(educationId), "미션 설명박스 조회에 성공하였습니다.");
     }
 }

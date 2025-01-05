@@ -2,7 +2,9 @@ package angel_bridge.angel_bridge_server.domain.assignment.service;
 
 import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AdminAssignmentRequestDto;
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AdminAssignmentResponseDto;
+import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.entity.Assignment;
+import angel_bridge.angel_bridge_server.domain.assignment.entity.AssignmentStatus;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.AssignmentRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.*;
 
@@ -36,7 +39,7 @@ public class AssignmentService {
     /**
      * 미션 기간 유효성 검사
      */
-    private void validateDateRange(Long educationId, Integer round, LocalDateTime startTime, LocalDateTime endTime) {
+    private void validateDateRange(Long educationId, int round, LocalDateTime startTime, LocalDateTime endTime) {
 
         if (!startTime.isBefore(endTime)) {
             throw new ApplicationException(INVALID_DATE_RANGE_EXCEPTION);
@@ -60,9 +63,9 @@ public class AssignmentService {
     /**
      * 미션 회차 유효성 검사
      */
-    private void validateDuplicateRound(Long educationId, Assignment assignment, Integer round) {
+    private void validateDuplicateRound(Long educationId, Assignment assignment, int round) {
         boolean isDuplicateRound = assignmentRepository.existsByEducationIdAndAssignmentRoundAndDeletedAtIsNull(educationId, round)
-                && (assignment == null || !assignment.getAssignmentRound().equals(round));
+                && (assignment == null || assignment.getAssignmentRound() != round);
         if (isDuplicateRound) {
             throw new ApplicationException(ALREADY_EXIST_ASSIGNMENT_ROUND_EXCEPTION);
         }
@@ -88,7 +91,8 @@ public class AssignmentService {
 
         Assignment saveAssignment = assignmentRepository.save(request.toEntity(education));
 
-        return AdminAssignmentResponseDto.from(saveAssignment);
+        AssignmentStatus status = saveAssignment.getStatus(LocalDateTime.now());
+        return AdminAssignmentResponseDto.from(saveAssignment, status);
     }
 
     // [PUT] 어드민 회차별 미션 수정
@@ -103,7 +107,8 @@ public class AssignmentService {
 
         assignment.update(request);
 
-        return AdminAssignmentResponseDto.from(assignment);
+        AssignmentStatus status = assignment.getStatus(LocalDateTime.now());
+        return AdminAssignmentResponseDto.from(assignment, status);
     }
 
     // [DELETE] 어드민 회차별 미션 삭제
@@ -115,5 +120,20 @@ public class AssignmentService {
         validateEducationId(assignment, educationId);
 
         assignmentRepository.delete(assignment);
+    }
+
+    // [GET] 미션 수행 현황 상위 박스 정보 조회
+    public AssignmentResponseDto getAssignmentBox(Long educationId) {
+
+        Education education = findEducationById(educationId);
+
+        Assignment currentAssignment = assignmentRepository.findCurrentAssignmentByEducationId(educationId, LocalDateTime.now())
+                .orElse(null);
+
+        if (currentAssignment == null) {
+            return AssignmentResponseDto.fromClosed(education);
+        }
+
+        return AssignmentResponseDto.fromOngoing(currentAssignment);
     }
 }
