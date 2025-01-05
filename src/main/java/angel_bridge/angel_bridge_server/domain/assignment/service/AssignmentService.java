@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.*;
@@ -33,16 +34,58 @@ public class AssignmentService {
         return assignmentRepository.findByIdAndDeletedAtIsNull(assignmentId).orElseThrow(() -> new ApplicationException(NOT_FOUND_ASSIGNMENT_ID));
     }
 
+    /**
+     * 미션 기간 유효성 검사
+     */
+    private void validateDateRange(Long educationId, Integer round, LocalDateTime startTime, LocalDateTime endTime) {
+
+        if (!startTime.isBefore(endTime)) {
+            throw new ApplicationException(INVALID_DATE_RANGE_EXCEPTION);
+        }
+
+        // 다음 회차들과의 미션 기간 유효성 검사
+        LocalDateTime nextRoundDate = assignmentRepository.findEarliestStartDateForNextRounds(educationId, round);
+        if (nextRoundDate != null) {
+            if (!startTime.isBefore(nextRoundDate) || !endTime.isBefore(nextRoundDate)) {
+                throw new ApplicationException(INVALID_DATE_RANGE_EXCEPTION);
+            }
+        }
+
+        // 이전 회차들과의 미션 기간 유효성 검사
+        LocalDateTime beforeRoundEndTime = assignmentRepository.findLatestEndTimeForBeforeRounds(educationId, round);
+        if (beforeRoundEndTime != null && !startTime.isAfter(beforeRoundEndTime)) {
+            throw new ApplicationException(INVALID_DATE_RANGE_EXCEPTION);
+        }
+    }
+
+    /**
+     * 미션 회차 유효성 검사
+     */
+    private void validateDuplicateRound(Long educationId, Assignment assignment, Integer round) {
+        boolean isDuplicateRound = assignmentRepository.existsByEducationIdAndAssignmentRoundAndDeletedAtIsNull(educationId, round)
+                && (assignment == null || !assignment.getAssignmentRound().equals(round));
+        if (isDuplicateRound) {
+            throw new ApplicationException(ALREADY_EXIST_ASSIGNMENT_ROUND_EXCEPTION);
+        }
+    }
+
+    /**
+     * 수정하고자 하는 미션의 교육 프로그램 ID 부합 검사
+     */
+    private void validateEducationId(Assignment assignment, Long educationId) {
+        if (!assignment.getEducation().getId().equals(educationId)) {
+            throw new ApplicationException(INVALID_EDUCATION_ID_ASSIGNMENT);
+        }
+    }
+
     // [POST] 어드민 회차별 미션 생성
     @Transactional
     public AssignmentResponseDto createAssignment(Long educationId, AssignmentRequestDto request) {
 
         Education education = findEducationById(educationId);
 
-        // 동일한 회차를 입력할 경우 예외처리
-        if (assignmentRepository.existsByEducationIdAndAssignmentRoundAndDeletedAtIsNull(educationId, request.round())) {
-            throw new ApplicationException(ALREADY_EXIST_ASSIGNMENT_ROUND_EXCEPTION);
-        }
+        validateDuplicateRound(educationId, null, request.round());
+        validateDateRange(educationId, request.round(), request.startTime(), request.endTime());
 
         Assignment saveAssignment = assignmentRepository.save(request.toEntity(education));
 
@@ -55,21 +98,12 @@ public class AssignmentService {
 
         Assignment assignment = findAssignmentById(assignmentId);
 
-        // 올바르지 않는 educationId를 입력할 경우 예외처리
-        if (!assignment.getEducation().getId().equals(educationId)) {
-            throw new ApplicationException(INVALID_EDUCATION_ID_ASSIGNMENT);
-        }
-
-        // 동일한 회차를 입력할 경우 예외처리
-        boolean isDuplicateRound = assignmentRepository.existsByEducationIdAndAssignmentRoundAndDeletedAtIsNull(educationId, request.round())
-                && !assignment.getAssignmentRound().equals(request.round());
-        if (isDuplicateRound) {
-            throw new ApplicationException(ALREADY_EXIST_ASSIGNMENT_ROUND_EXCEPTION);
-        }
+        validateEducationId(assignment, educationId);
+        validateDuplicateRound(educationId, assignment, request.round());
+        validateDateRange(educationId, request.round(), request.startTime(), request.endTime());
 
         assignment.update(request);
 
         return AssignmentResponseDto.from(assignment);
-
     }
 }
