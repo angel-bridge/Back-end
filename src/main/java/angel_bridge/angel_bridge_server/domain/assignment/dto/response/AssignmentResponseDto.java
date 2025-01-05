@@ -32,7 +32,7 @@ public record AssignmentResponseDto(
         @Schema(example = "교육 프로그램 진행 여부")
         boolean isFinished
 ) {
-    public static AssignmentResponseDto fromOngoing(Assignment assignment) {
+    public static AssignmentResponseDto fromOngoing(Assignment assignment, int performanceRate) {
         return AssignmentResponseDto.builder()
                 .assignmentId(assignment.getId())
                 .educationId(assignment.getEducation().getId())
@@ -41,6 +41,7 @@ public record AssignmentResponseDto(
                 .assignmentTitle(assignment.getAssignmentTitle())
                 .description(assignment.getAssignmentDescription())
                 .assignmentLink(assignment.getAssignmentLink())
+                .performanceRate(performanceRate)
                 .noticeLink(assignment.getEducation().getNoticeLink())
                 .methodLink(assignment.getEducation().getMethodLink())
                 .isFinished(false)

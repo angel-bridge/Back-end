@@ -11,4 +11,10 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
 
     @Query("SELECT s.attendanceStatus FROM Submission s WHERE s.assignment.id = :assignmentId AND s.member.id = :memberId")
     Optional<AttendanceStatus> findAttendanceStatusByAssignmentIdAndMemberId(Long assignmentId, Long memberId);
+
+    @Query("SELECT COUNT(s) FROM Submission s " +
+            "WHERE s.assignment.education.id = :educationId " +
+            "AND s.member.id = :memberId " +
+            "AND s.attendanceStatus = :status")
+    int countByEducationIdAndAttendanceStatus(Long educationId, Long memberId, AttendanceStatus status);
 }

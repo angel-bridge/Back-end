@@ -37,4 +37,6 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     Optional<Assignment> findCurrentAssignmentByEducationId(@Param("educationId") Long educationId, @Param("now") LocalDateTime now);
 
     Page<Assignment> findByEducationIdAndDeletedAtIsNull(Long educationId, Pageable pageable);
+
+    int countByEducationIdAndDeletedAtIsNull(Long educationId);
 }

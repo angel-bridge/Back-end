@@ -92,6 +92,28 @@ public class AssignmentService {
     }
 
     /**
+     * 미션 수행도 계산 로직
+     */
+    private int calculatePerformanceRate(Long educationId, Long memberId) {
+
+        // 출석 제출 개수
+        int onTimeCount = submissionRepository.countByEducationIdAndAttendanceStatus(educationId, memberId, AttendanceStatus.ON_TIME);
+
+        // 지각 제출 개수
+        int lateCount = submissionRepository.countByEducationIdAndAttendanceStatus(educationId, memberId, AttendanceStatus.LATE);
+
+        // 전체 미션 개수
+        int totalAssignments = assignmentRepository.countByEducationIdAndDeletedAtIsNull(educationId);
+
+        if (totalAssignments == 0) {
+            return 0;
+        }
+
+        double rate = ((onTimeCount + (lateCount * 0.5)) / totalAssignments) * 100;
+        return (int) Math.round(rate);
+    }
+
+    /**
      * AttendanceStatus 계산 메서드
      */
     private AttendanceStatus calculateAttendanceStatus(Assignment assignment) {
@@ -148,7 +170,7 @@ public class AssignmentService {
     }
 
     // [GET] 미션 수행 현황 상위 박스 정보 조회
-    public AssignmentResponseDto getAssignmentBox(Long educationId) {
+    public AssignmentResponseDto getAssignmentBox(Long educationId, Long memberId) {
 
         Education education = findEducationById(educationId);
 
@@ -159,7 +181,9 @@ public class AssignmentService {
             return AssignmentResponseDto.fromClosed(education);
         }
 
-        return AssignmentResponseDto.fromOngoing(currentAssignment);
+        int performanceRate = calculatePerformanceRate(educationId, memberId);
+
+        return AssignmentResponseDto.fromOngoing(currentAssignment, performanceRate);
     }
 
     // [GET] 미션 수행 현황 전체 과제 리스트 조회

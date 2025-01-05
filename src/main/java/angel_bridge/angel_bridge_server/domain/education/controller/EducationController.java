@@ -80,9 +80,11 @@ public class EducationController {
 
     @Operation(summary = "미션 설명박스 조회", description = "미션 수행 현황의 상위 박스 정보를 조회하는 API")
     @GetMapping("/{educationId}/assignment")
-    public CommonResponse<AssignmentResponseDto> getAssignmentBox(@PathVariable Long educationId) {
+    public CommonResponse<AssignmentResponseDto> getAssignmentBox(@PathVariable Long educationId, @AuthenticationPrincipal CustomOAuth2User userDetails) {
 
-        return new CommonResponse<>(assignmentService.getAssignmentBox(educationId), "미션 설명박스 조회에 성공하였습니다.");
+        Long memberId = userDetails.getMemberId();
+
+        return new CommonResponse<>(assignmentService.getAssignmentBox(educationId, memberId), "미션 설명박스 조회에 성공하였습니다.");
     }
 
     @Operation(summary = "미션 제출 현황 리스트 조회", description = "미션 제출 현황 리스트 조회하는 API")
