@@ -25,7 +25,7 @@ public class TossPayment extends BaseEntity {
     @JoinColumn(name = "enrollment_id")
     private Enrollment enrollment;
 
-    @Column(name = "toss_order_id")
+    @Column(name = "toss_order_id", nullable = false)
     private String tossOrderId;
 
     @Column(name = "toss_payment_key", nullable = false, unique = true)
