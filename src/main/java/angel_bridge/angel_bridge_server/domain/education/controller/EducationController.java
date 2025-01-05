@@ -1,17 +1,22 @@
 package angel_bridge.angel_bridge_server.domain.education.controller;
 
+import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentListResponseDto;
+import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentPagedResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.service.AssignmentService;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationDetailResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.service.EducationService;
+import angel_bridge.angel_bridge_server.domain.submission.dto.response.SubmissionResponseDto;
 import angel_bridge.angel_bridge_server.global.common.response.CommonResponse;
+import angel_bridge.angel_bridge_server.global.oauth2.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -78,5 +83,14 @@ public class EducationController {
     public CommonResponse<AssignmentResponseDto> getAssignmentBox(@PathVariable Long educationId) {
 
         return new CommonResponse<>(assignmentService.getAssignmentBox(educationId), "미션 설명박스 조회에 성공하였습니다.");
+    }
+
+    @Operation(summary = "미션 제출 현황 리스트 조회", description = "미션 제출 현황 리스트 조회하는 API")
+    @GetMapping("/{educationId}/assignments")
+    public CommonResponse<AssignmentPagedResponseDto<AssignmentListResponseDto>> getAllAssignments(@PathVariable Long educationId, @RequestParam(defaultValue = "1") int page, @AuthenticationPrincipal CustomOAuth2User userDetails) {
+
+        Long memberId = userDetails.getMemberId();
+
+        return new CommonResponse<>(assignmentService.getAllAssignments(educationId, page, memberId), "미션 제출 현황 리스트 조회에 성공하였습니다.");
     }
 }

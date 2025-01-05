@@ -2,15 +2,25 @@ package angel_bridge.angel_bridge_server.domain.assignment.service;
 
 import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AdminAssignmentRequestDto;
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AdminAssignmentResponseDto;
+import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentListResponseDto;
+import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentPagedResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.entity.Assignment;
 import angel_bridge.angel_bridge_server.domain.assignment.entity.AssignmentStatus;
+import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
+import angel_bridge.angel_bridge_server.domain.submission.dto.response.SubmissionResponseDto;
+import angel_bridge.angel_bridge_server.domain.submission.entity.AttendanceStatus;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.AssignmentRepository;
 import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
+import angel_bridge.angel_bridge_server.global.repository.SubmissionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +37,7 @@ public class AssignmentService {
 
     private final AssignmentRepository assignmentRepository;
     private final EducationRepository educationRepository;
+    private final SubmissionRepository submissionRepository;
 
     public Education findEducationById(Long educationId) {
         return educationRepository.findByIdAndDeletedAtIsNull(educationId).orElseThrow(() -> new ApplicationException(NOT_FOUND_EDUCATION_ID));
@@ -78,6 +89,20 @@ public class AssignmentService {
         if (!assignment.getEducation().getId().equals(educationId)) {
             throw new ApplicationException(INVALID_EDUCATION_ID_ASSIGNMENT);
         }
+    }
+
+    /**
+     * AttendanceStatus 계산 메서드
+     */
+    private AttendanceStatus calculateAttendanceStatus(Assignment assignment) {
+        LocalDateTime now = LocalDateTime.now();
+
+        // 현재 시간이 endTime 이후면 ABSENT
+        if (now.isAfter(assignment.getAssignmentEndTime())) {
+            return AttendanceStatus.ABSENT;
+        }
+
+        return AttendanceStatus.PENDING;
     }
 
     // [POST] 어드민 회차별 미션 생성
@@ -135,5 +160,31 @@ public class AssignmentService {
         }
 
         return AssignmentResponseDto.fromOngoing(currentAssignment);
+    }
+
+    // [GET] 미션 수행 현황 전체 과제 리스트 조회
+    public AssignmentPagedResponseDto<AssignmentListResponseDto> getAllAssignments(Long educationId, int page, Long memberId) {
+
+        if (page == 0)
+            throw new ApplicationException(BAD_REQUEST_ERROR);
+        Pageable pageable = PageRequest.of(page - 1, 7, Sort.by(Sort.Direction.ASC, "assignmentRound"));
+
+        Page<Assignment> assignmentPage = assignmentRepository.findByEducationIdAndDeletedAtIsNull(educationId, pageable);
+
+        List<AssignmentListResponseDto> assignments = assignmentPage.getContent().stream()
+                .map(assignment -> {
+                    AttendanceStatus attendanceStatus = submissionRepository.findAttendanceStatusByAssignmentIdAndMemberId(assignment.getId(), memberId)
+                            .orElseGet(() -> calculateAttendanceStatus(assignment));
+                    AssignmentStatus assignmentStatus = assignment.getStatus(LocalDateTime.now());
+                    return AssignmentListResponseDto.from(assignment, assignmentStatus, attendanceStatus);
+                })
+                .toList();
+
+        return new AssignmentPagedResponseDto<>(
+                assignmentPage.getTotalElements(),
+                assignmentPage.getNumber() + 1,
+                assignmentPage.getTotalPages(),
+                assignments
+        );
     }
 }

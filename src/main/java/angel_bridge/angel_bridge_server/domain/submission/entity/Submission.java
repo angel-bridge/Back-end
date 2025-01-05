@@ -23,15 +23,9 @@ public class Submission extends BaseEntity {
     @Column(name = "submission_link")
     private String submissionLink;
 
-    @Column(name = "submission_time")
-    private LocalDateTime submissionTime;
-
-    @Column(name = "is_completed", nullable = false)
-    private Boolean isCompleted = false;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "attendance_status", length = 10, nullable = false)
-    private AttendanceStatus attendanceStatus = AttendanceStatus.PENDING;
+    private AttendanceStatus attendanceStatus = AttendanceStatus.ON_TIME;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

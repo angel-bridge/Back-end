@@ -1,6 +1,8 @@
 package angel_bridge.angel_bridge_server.global.repository;
 
 import angel_bridge.angel_bridge_server.domain.assignment.entity.Assignment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,4 +35,6 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             "AND a.assignmentStartTime <= :now " +
             "AND a.assignmentEndTime >= :now")
     Optional<Assignment> findCurrentAssignmentByEducationId(@Param("educationId") Long educationId, @Param("now") LocalDateTime now);
+
+    Page<Assignment> findByEducationIdAndDeletedAtIsNull(Long educationId, Pageable pageable);
 }
