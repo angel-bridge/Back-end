@@ -153,7 +153,7 @@ public class EducationService {
             throw new ApplicationException(BAD_REQUEST_ERROR);
         Pageable pageable = PageRequest.of(page - 1, 12);
 
-        return educationRepository.findAll(pageable)
+        return educationRepository.findAllActive(pageable)
                 .map(education -> EducationResponseDto.from(
                                 education, imageService.getImageUrl(education.getEducationPreImage())))
                 .stream().toList();
