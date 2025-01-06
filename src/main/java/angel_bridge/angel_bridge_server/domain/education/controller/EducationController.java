@@ -8,15 +8,14 @@ import angel_bridge.angel_bridge_server.domain.assignment.service.AssignmentServ
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationDetailResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.service.EducationService;
-import angel_bridge.angel_bridge_server.domain.submission.dto.response.SubmissionResponseDto;
-import angel_bridge.angel_bridge_server.domain.submission.entity.AttendanceStatus;
+import angel_bridge.angel_bridge_server.domain.submission.dto.request.SubmissionRequestDto;
 import angel_bridge.angel_bridge_server.global.common.response.CommonResponse;
 import angel_bridge.angel_bridge_server.global.oauth2.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -71,9 +70,9 @@ public class EducationController {
     @GetMapping("/search")
     public CommonResponse<List<EducationResponseDto>> searchEducationByTitle(@RequestParam String keyword, @RequestParam(defaultValue = "1") int page, @Parameter(
             examples = {
-                    @ExampleObject(name = "'전체'에서 검색", value = "ALL"),
-                    @ExampleObject(name = "'모집중'에서 검색", value = "ONGOING"),
-                    @ExampleObject(name = "'모집예정'에서 검색", value = "UPCOMING")
+                    @ExampleObject(name = "'전체'에서 검색 (= ALL)", value = "ALL"),
+                    @ExampleObject(name = "'모집중'에서 검색 (= ONGOING)", value = "ONGOING"),
+                    @ExampleObject(name = "'모집예정'에서 검색 (= UPCOMING)", value = "UPCOMING")
             }
     ) @RequestParam(defaultValue = "ALL") String status) {
 
@@ -102,15 +101,24 @@ public class EducationController {
     @GetMapping("/{educationId}/assignment/{assignmentId}")
     public CommonResponse<AssignmentDetailResponseDto> getAssignmentInfo(@PathVariable Long educationId, @PathVariable Long assignmentId, @AuthenticationPrincipal CustomOAuth2User userDetails, @Parameter(
             examples = {
-                    @ExampleObject(name = "출석인 경우", value = "ONTIME"),
-                    @ExampleObject(name = "지각인 경우", value = "LATE"),
-                    @ExampleObject(name = "결석인 경우", value = "ABSENT"),
-                    @ExampleObject(name = "오늘 회차이고 미제출인 경우", value = "PENDING"),
+                    @ExampleObject(name = "출석인 경우 (= ONTIME)", value = "ONTIME"),
+                    @ExampleObject(name = "지각인 경우 (= LATE)", value = "LATE"),
+                    @ExampleObject(name = "결석인 경우 (= ABSENT)", value = "ABSENT"),
+                    @ExampleObject(name = "오늘 회차이고 미제출인 경우 (= PENDING)", value = "PENDING"),
             }
     ) @RequestParam String status) {
 
         Long memberId = userDetails.getMemberId();
 
         return new CommonResponse<>(assignmentService.getAssignmentInfo(educationId, assignmentId, memberId, status), "개별 미션 조회에 성공하였습니다.");
+    }
+
+    @Operation(summary = "과제 제출하기", description = "과제 링크 제출 API")
+    @PatchMapping("/{educationId}/assignment/{assignmentId}/submit")
+    public CommonResponse<AssignmentDetailResponseDto> submitAssignment(@PathVariable Long educationId, @PathVariable Long assignmentId, @AuthenticationPrincipal CustomOAuth2User userDetails, @Valid @RequestBody SubmissionRequestDto request) {
+
+        Long memberId = userDetails.getMemberId();
+
+        return new CommonResponse<>(assignmentService.submitAssignment(educationId, assignmentId, memberId, request), "과제 제출에 성공하였습니다.");
     }
 }

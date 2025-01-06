@@ -22,4 +22,6 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
             "WHERE s.assignment.id = :assignmentId " +
             "AND s.member.id = :memberId")
     Optional<Submission> findByAssignmentIdAndMemberId(Long assignmentId, Long memberId);
+
+    boolean existsByAssignmentIdAndMemberId(Long assignmentId, Long memberId);
 }

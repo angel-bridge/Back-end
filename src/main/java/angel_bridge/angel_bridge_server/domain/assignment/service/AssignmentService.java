@@ -4,14 +4,15 @@ import angel_bridge.angel_bridge_server.domain.assignment.dto.request.AdminAssig
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.*;
 import angel_bridge.angel_bridge_server.domain.assignment.entity.Assignment;
 import angel_bridge.angel_bridge_server.domain.assignment.entity.AssignmentStatus;
-import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
-import angel_bridge.angel_bridge_server.domain.submission.dto.response.SubmissionResponseDto;
+import angel_bridge.angel_bridge_server.domain.member.entity.Member;
+import angel_bridge.angel_bridge_server.domain.submission.dto.request.SubmissionRequestDto;
 import angel_bridge.angel_bridge_server.domain.submission.entity.AttendanceStatus;
 import angel_bridge.angel_bridge_server.domain.submission.entity.Submission;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.AssignmentRepository;
 import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
+import angel_bridge.angel_bridge_server.global.repository.MemberRepository;
 import angel_bridge.angel_bridge_server.global.repository.SubmissionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ public class AssignmentService {
     private final AssignmentRepository assignmentRepository;
     private final EducationRepository educationRepository;
     private final SubmissionRepository submissionRepository;
+    private final MemberRepository memberRepository;
 
     public Education findEducationById(Long educationId) {
         return educationRepository.findByIdAndDeletedAtIsNull(educationId).orElseThrow(() -> new ApplicationException(NOT_FOUND_EDUCATION_ID));
@@ -43,6 +45,10 @@ public class AssignmentService {
 
     public Assignment findAssignmentById(Long assignmentId, Long educationId) {
         return assignmentRepository.findByIdAndEducationIdAndDeletedAtIsNull(assignmentId, educationId).orElseThrow(() -> new ApplicationException(NOT_FOUND_ASSIGNMENT_ID));
+    }
+
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findByIdAndDeletedAtIsNull(memberId).orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
     }
 
     /**
@@ -103,7 +109,7 @@ public class AssignmentService {
     }
 
     /**
-     * AttendanceStatus 계산 메서드
+     * [과제 미제출] AttendanceStatus 계산 메서드
      */
     private AttendanceStatus calculateAttendanceStatus(Assignment assignment) {
         LocalDateTime now = LocalDateTime.now();
@@ -114,6 +120,20 @@ public class AssignmentService {
         }
 
         return AttendanceStatus.PENDING;
+    }
+
+    /**
+     * [과제 제출] AttendanceStatus 계산 메서드
+     */
+    private AttendanceStatus calculateSubmitStatus(Assignment assignment) {
+        LocalDateTime now = LocalDateTime.now();
+
+        // 현재 시간이 endTime 이후면 LATE
+        if (now.isAfter(assignment.getAssignmentEndTime())) {
+            return AttendanceStatus.LATE;
+        }
+
+        return AttendanceStatus.ON_TIME;
     }
 
     // [POST] 어드민 회차별 미션 생성
@@ -208,6 +228,25 @@ public class AssignmentService {
             submission = submissionRepository.findByAssignmentIdAndMemberId(assignmentId, memberId)
                     .orElseThrow(() -> new ApplicationException(SUBMISSION_NOT_FOUND));
         }
+
+        return AssignmentDetailResponseDto.from(assignment, submission);
+    }
+
+    // [PATCH] 과제 제출하기
+    @Transactional
+    public AssignmentDetailResponseDto submitAssignment(Long educationId, Long assignmentId, Long memberId, SubmissionRequestDto request) {
+
+        Member member = findMemberById(memberId);
+        Assignment assignment = findAssignmentById(assignmentId, educationId);
+
+        if (submissionRepository.existsByAssignmentIdAndMemberId(assignmentId, memberId)) {
+            throw new ApplicationException(ALREADY_EXIST_EXCEPTION);
+        }
+
+        AttendanceStatus attendanceStatus = calculateSubmitStatus(assignment);
+
+        Submission submission = request.toEntity(assignment, member, attendanceStatus);
+        submissionRepository.save(submission);
 
         return AssignmentDetailResponseDto.from(assignment, submission);
     }

@@ -5,6 +5,7 @@ import angel_bridge.angel_bridge_server.domain.member.entity.Member;
 import angel_bridge.angel_bridge_server.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,4 +36,11 @@ public class Submission extends BaseEntity {
     @JoinColumn(name = "assignment_id")
     private Assignment assignment;
 
+    @Builder
+    public Submission(String submissionLink, AttendanceStatus attendanceStatus, Member member, Assignment assignment) {
+        this.submissionLink = submissionLink;
+        this.attendanceStatus = attendanceStatus;
+        this.member = member;
+        this.assignment = assignment;
+    }
 }
