@@ -1,6 +1,5 @@
 package angel_bridge.angel_bridge_server.domain.member.controller;
 
-import angel_bridge.angel_bridge_server.domain.member.dto.request.AuthRequestDto;
 import angel_bridge.angel_bridge_server.domain.member.dto.request.MemberRequestDto;
 import angel_bridge.angel_bridge_server.domain.member.dto.response.MemberResponseDto;
 import angel_bridge.angel_bridge_server.domain.member.service.MemberService;
