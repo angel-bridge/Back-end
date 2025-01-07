@@ -8,8 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Getter
@@ -40,13 +39,13 @@ public class TossPayment extends BaseEntity {
     private PaymentStatus tossPaymentStatus;
 
     @Column(name = "total_amount")
-    private BigDecimal totalAmount;
+    private Long totalAmount;
 
     @Column(name = "request_at")
-    private LocalDateTime requestAt;
+    private OffsetDateTime requestAt;
 
     @Column(name = "approved_at")
-    private LocalDateTime approvedAt;
+    private OffsetDateTime approvedAt;
 
     @Builder
     public TossPayment(Enrollment enrollment,
@@ -54,9 +53,9 @@ public class TossPayment extends BaseEntity {
                        String tossPaymentKey,
                        PaymentMethod tossPaymentMethod,
                        PaymentStatus tossPaymentStatus,
-                       BigDecimal totalAmount,
-                       LocalDateTime requestAt,
-                       LocalDateTime approvedAt) {
+                       Long totalAmount,
+                       OffsetDateTime requestAt,
+                       OffsetDateTime approvedAt) {
 
         this.enrollment = enrollment;
         this.tossOrderId = tossOrderId;
