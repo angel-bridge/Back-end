@@ -51,6 +51,10 @@ dependencies {
 
 	// s3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// webclient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'io.projectreactor.netty:reactor-netty:1.0.26'
 }
 
 tasks.named('test') {
