@@ -60,7 +60,7 @@ public class Member extends BaseEntity {
     private Boolean isRegistered;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
+    @Column(name = "image_type", nullable = false, length = 10)
     private ProfileImageType imageType;
 
     public void updateImageType() {
