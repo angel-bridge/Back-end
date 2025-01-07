@@ -6,7 +6,6 @@ import angel_bridge.angel_bridge_server.domain.enrollment.entity.EnrollmentStatu
 import angel_bridge.angel_bridge_server.domain.member.entity.Member;
 import angel_bridge.angel_bridge_server.domain.payment.dto.request.ConfirmPaymentRequestDto;
 import angel_bridge.angel_bridge_server.domain.payment.dto.response.ConfirmPaymentResponseDto;
-import angel_bridge.angel_bridge_server.domain.payment.entity.PaymentMethod;
 import angel_bridge.angel_bridge_server.domain.payment.entity.TossPayment;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
@@ -78,6 +77,7 @@ public class PaymentService {
         Enrollment enrollment = Enrollment.builder()
                 .member(member)
                 .education(education)
+                .isPaid(true)
                 .enrollmentStatus(
                         EnrollmentStatus.getStatusFromEducationStartDate(
                                 education.getEducationStartDate(),
