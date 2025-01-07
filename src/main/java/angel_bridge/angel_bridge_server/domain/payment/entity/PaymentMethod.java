@@ -1,7 +1,10 @@
 package angel_bridge.angel_bridge_server.domain.payment.entity;
 
+import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import lombok.Getter;
 import lombok.ToString;
+
+import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.NOT_FOUND_PAYMENT_METHOD;
 
 @Getter
 @ToString
@@ -20,5 +23,13 @@ public enum PaymentMethod {
 
     PaymentMethod(String description) {
         this.description = description;
+    }
+
+    public static PaymentMethod fromDescription(String description) {
+        for (PaymentMethod method : PaymentMethod.values()) {
+            if (method.getDescription().equals(description))
+                return method;
+        }
+        throw new ApplicationException(NOT_FOUND_PAYMENT_METHOD);
     }
 }
