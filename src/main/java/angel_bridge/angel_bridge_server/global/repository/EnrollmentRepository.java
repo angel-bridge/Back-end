@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
-    Page<Enrollment> findByEnrollmentStatusAndDeletedAtIsNull(EnrollmentStatus status, Pageable pageable);
+    Page<Enrollment> findByMemberAndEnrollmentStatusAndDeletedAtIsNull(Member member, EnrollmentStatus enrollmentStatus, Pageable pageable);
 
     @Modifying
     @Transactional

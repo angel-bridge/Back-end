@@ -29,6 +29,10 @@ public record AdminEducationResponseDto(
 
         String price,
 
+        String assignmentNoticeLink,
+
+        String assignmentMethodLink,
+
         String detailFile,
 
         String recruitmentStatus
@@ -46,6 +50,8 @@ public record AdminEducationResponseDto(
                 .recruitmentStartDate(education.getRecruitmentStartDate())
                 .recruitmentEndDate(education.getRecruitmentEndDate())
                 .price(education.getPrice())
+                .assignmentNoticeLink(education.getNoticeLink())
+                .assignmentMethodLink(education.getMethodLink())
                 .detailFile(education.getEducationDetailImage())
                 .recruitmentStatus(education.getRecruitmentStatus().getDescription())
                 .build();

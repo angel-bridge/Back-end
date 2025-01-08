@@ -49,6 +49,12 @@ public class Education extends BaseEntity {
     @Column(name = "price")
     private String price;
 
+    @Column(name = "notice_link")
+    private String noticeLink;
+
+    @Column(name = "method_link")
+    private String methodLink;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "recruitment_status")
     private RecruitmentStatus recruitmentStatus;
@@ -67,7 +73,7 @@ public class Education extends BaseEntity {
     }
 
     @Builder
-    public Education(String educationPreImage, String educationDetailImage, String educationDescription, String educationTitle, LocalDate educationStartDate, LocalDate educationEndDate, LocalDate recruitmentStartDate, LocalDate recruitmentEndDate, String price, RecruitmentStatus recruitmentStatus) {
+    public Education(String educationPreImage, String educationDetailImage, String educationDescription, String educationTitle, LocalDate educationStartDate, LocalDate educationEndDate, LocalDate recruitmentStartDate, LocalDate recruitmentEndDate, String price, String noticeLink, String methodLink, RecruitmentStatus recruitmentStatus) {
         this.educationPreImage = educationPreImage;
         this.educationDetailImage = educationDetailImage;
         this.educationDescription = educationDescription;
@@ -77,6 +83,8 @@ public class Education extends BaseEntity {
         this.recruitmentStartDate = recruitmentStartDate;
         this.recruitmentEndDate = recruitmentEndDate;
         this.price = price;
+        this.noticeLink = noticeLink;
+        this.methodLink = methodLink;
         this.recruitmentStatus = recruitmentStatus;
     }
 }

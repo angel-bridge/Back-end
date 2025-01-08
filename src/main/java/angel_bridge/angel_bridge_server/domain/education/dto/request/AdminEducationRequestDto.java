@@ -28,22 +28,30 @@ public record AdminEducationRequestDto(
         LocalDate recruitmentEndDate,
 
         @Schema(description = "가격", example = "119,000원")
-        String price
+        String price,
+
+        @Schema(description = "미션 공지사항 링크", example = "https://angelbridge.notion.site/notice")
+        String assignmentNoticeLink,
+
+        @Schema(description = "미션 인증방법 링크", example = "https://angelbridge.notion.site/method")
+        String assignmentMethodLink
 ) {
 
     public Education toEntity(String preFile, String detailFile) {
 
         return Education.builder()
                 .educationPreImage(preFile)
-                .educationDescription(this.description)
-                .educationTitle(this.title)
-                .educationStartDate(this.educationStartDate)
-                .educationEndDate(this.educationEndDate)
-                .recruitmentStartDate(this.recruitmentStartDate)
-                .recruitmentEndDate(this.recruitmentEndDate)
-                .price(this.price)
+                .educationDescription(description)
+                .educationTitle(title)
+                .educationStartDate(educationStartDate)
+                .educationEndDate(educationEndDate)
+                .recruitmentStartDate(recruitmentStartDate)
+                .recruitmentEndDate(recruitmentEndDate)
+                .price(price)
+                .noticeLink(assignmentNoticeLink)
+                .methodLink(assignmentMethodLink)
                 .educationDetailImage(detailFile)
-                .recruitmentStatus(this.recruitmentStartDate.isAfter(LocalDate.now()) ? RecruitmentStatus.UPCOMING : RecruitmentStatus.ONGOING)
+                .recruitmentStatus(recruitmentStartDate.isAfter(LocalDate.now()) ? RecruitmentStatus.UPCOMING : RecruitmentStatus.ONGOING)
                 .build();
 
     }

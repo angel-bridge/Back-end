@@ -153,7 +153,7 @@ public class EducationService {
             throw new ApplicationException(BAD_REQUEST_ERROR);
         Pageable pageable = PageRequest.of(page - 1, 12);
 
-        return educationRepository.findAll(pageable)
+        return educationRepository.findAllActive(pageable)
                 .map(education -> EducationResponseDto.from(
                                 education, imageService.getImageUrl(education.getEducationPreImage())))
                 .stream().toList();
@@ -189,7 +189,7 @@ public class EducationService {
     public EducationDetailResponseDto getEducationDetail(Long educationId) {
 
         Education education = findEducationById(educationId);
-        return EducationDetailResponseDto.from(education, education.getEducationPreImage(), education.getEducationDetailImage());
+        return EducationDetailResponseDto.from(education, imageService.getImageUrl(education.getEducationPreImage()), imageService.getImageUrl(education.getEducationDetailImage()));
     }
 
     // [GET] 프로그램 검색 조회

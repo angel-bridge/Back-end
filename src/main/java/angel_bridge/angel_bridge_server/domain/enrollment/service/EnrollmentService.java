@@ -2,8 +2,10 @@ package angel_bridge.angel_bridge_server.domain.enrollment.service;
 
 import angel_bridge.angel_bridge_server.domain.enrollment.dto.response.EnrollmentResponseDto;
 import angel_bridge.angel_bridge_server.domain.enrollment.entity.EnrollmentStatus;
+import angel_bridge.angel_bridge_server.domain.member.entity.Member;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.EnrollmentRepository;
+import angel_bridge.angel_bridge_server.global.repository.MemberRepository;
 import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.BAD_REQUEST_ERROR;
+import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.NOT_FOUND_USER;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,6 +26,7 @@ public class EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;
     private final ImageService imageService;
+    private final MemberRepository memberRepository;
 
     // 자정에 enrollment Status 업데이트
     @Transactional
@@ -34,39 +38,48 @@ public class EnrollmentService {
     }
 
     // [GET] 수강 중인 프로그램 조회
-    public List<EnrollmentResponseDto> getInProgressProgram(int page) {
+    public List<EnrollmentResponseDto> getInProgressProgram(int page, Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
         if (page == 0)
             throw new ApplicationException(BAD_REQUEST_ERROR);
         Pageable pageable = PageRequest.of(page - 1, 4);
 
-        return enrollmentRepository.findByEnrollmentStatusAndDeletedAtIsNull(EnrollmentStatus.IN_PROGRESS, pageable)
+        return enrollmentRepository.findByMemberAndEnrollmentStatusAndDeletedAtIsNull(member, EnrollmentStatus.IN_PROGRESS, pageable)
                 .map(enrollment -> EnrollmentResponseDto.from(
                         enrollment, imageService.getImageUrl(enrollment.getEducation().getEducationPreImage())))
                 .stream().toList();
     }
 
     // [GET] 수강 예정인 프로그램 조회
-    public List<EnrollmentResponseDto> getScheduledProgram(int page) {
+    public List<EnrollmentResponseDto> getScheduledProgram(int page, Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
         if (page == 0)
             throw new ApplicationException(BAD_REQUEST_ERROR);
         Pageable pageable = PageRequest.of(page - 1, 4);
 
-        return enrollmentRepository.findByEnrollmentStatusAndDeletedAtIsNull(EnrollmentStatus.SCHEDULED, pageable)
+        return enrollmentRepository.findByMemberAndEnrollmentStatusAndDeletedAtIsNull(member, EnrollmentStatus.SCHEDULED, pageable)
                 .map(enrollment -> EnrollmentResponseDto.from(
                         enrollment, imageService.getImageUrl(enrollment.getEducation().getEducationPreImage())))
                 .stream().toList();
     }
 
     // [GET] 수강 완료인 프로그램 조회
-    public List<EnrollmentResponseDto> getCompletedProgram(int page) {
+    public List<EnrollmentResponseDto> getCompletedProgram(int page, Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
         if (page == 0)
             throw new ApplicationException(BAD_REQUEST_ERROR);
         Pageable pageable = PageRequest.of(page - 1, 4);
 
-        return enrollmentRepository.findByEnrollmentStatusAndDeletedAtIsNull(EnrollmentStatus.COMPLETED, pageable)
+        return enrollmentRepository.findByMemberAndEnrollmentStatusAndDeletedAtIsNull(member, EnrollmentStatus.COMPLETED, pageable)
                 .map(enrollment -> EnrollmentResponseDto.from(
                         enrollment, imageService.getImageUrl(enrollment.getEducation().getEducationPreImage())))
                 .stream().toList();

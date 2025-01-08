@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -44,4 +45,18 @@ public class GlobalExceptionHandler {
                 .body(new ExceptionResponse(INTERNAL_SERVER_ERROR));
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+
+        log.error("HttpMessageNotReadableException 발생: {}", e.getMessage(), e);
+
+        String message = "요청 데이터 형식이 올바르지 않습니다." +
+                "( - 날짜/시간 형식은 'yyyy-MM-dd'T'HH:mm' 형식을 사용해야 합니다. " +
+                "- 필수 값이 누락되지 않았는지 확인하세요. " +
+                "- JSON 구조가 유효한지 확인하세요. )";
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ExceptionResponse(ExceptionCode.INVALID_REQUEST_FORMAT, message));
+    }
 }
