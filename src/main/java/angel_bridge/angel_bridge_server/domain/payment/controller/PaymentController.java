@@ -1,6 +1,7 @@
 package angel_bridge.angel_bridge_server.domain.payment.controller;
 
 import angel_bridge.angel_bridge_server.domain.payment.dto.request.ConfirmPaymentRequestDto;
+import angel_bridge.angel_bridge_server.domain.payment.dto.response.PaymentResponseDto;
 import angel_bridge.angel_bridge_server.domain.payment.service.PaymentService;
 import angel_bridge.angel_bridge_server.global.common.response.CommonResponse;
 import angel_bridge.angel_bridge_server.global.oauth2.dto.CustomOAuth2User;
@@ -27,5 +28,12 @@ public class PaymentController {
 
         paymentService.confirmPayment(confirmPaymentRequestDto, userDetails.getMemberId(), educationId);
         return new CommonResponse<>("결제 승인이 완료되었습니다.");
+    }
+
+    @Operation(summary = "결제 내역 조회", description = "결제 내역 조회 API")
+    @GetMapping
+    public CommonResponse<PaymentResponseDto> getPaymentHistory(@AuthenticationPrincipal CustomOAuth2User userDetails) {
+
+        return new CommonResponse<>(paymentService.getPaymentHistory(userDetails.getMemberId()), "결제 내역 조회에 성공하였습니다.");
     }
 }
