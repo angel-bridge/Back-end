@@ -47,7 +47,7 @@ public class PaymentService {
 
     // [POST] 결제 취소
     @Transactional
-    public void cancelPayment(CancelReasonResponseDto cancelReasonResponseDto, Long enrollmentId) throws Exception {
+    public void cancelPayment(CancelPaymentRequestDto cancelPaymentRequestDto, Long enrollmentId) throws Exception {
 
         // Enrollment 조회
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
@@ -61,7 +61,7 @@ public class PaymentService {
                 .uri(uriBuilder -> uriBuilder
                         .path("/{paymentKey}/cancel")
                         .build(paymentKey))
-                .bodyValue(cancelReasonResponseDto)
+                .bodyValue(cancelPaymentRequestDto)
                 .retrieve()
                 .onStatus(status -> status.value() != 200, clientResponse -> {
                     return Mono.error(new ApplicationException(PAYMENT_API_FAIL));
