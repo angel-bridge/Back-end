@@ -5,10 +5,7 @@ import angel_bridge.angel_bridge_server.domain.enrollment.entity.Enrollment;
 import angel_bridge.angel_bridge_server.domain.enrollment.entity.EnrollmentStatus;
 import angel_bridge.angel_bridge_server.domain.member.entity.Member;
 import angel_bridge.angel_bridge_server.domain.payment.dto.request.ConfirmPaymentRequestDto;
-import angel_bridge.angel_bridge_server.domain.payment.dto.response.CanceledPaymentResponseDto;
-import angel_bridge.angel_bridge_server.domain.payment.dto.response.CompletePaymentResponseDto;
-import angel_bridge.angel_bridge_server.domain.payment.dto.response.ConfirmPaymentResponseDto;
-import angel_bridge.angel_bridge_server.domain.payment.dto.response.PaymentResponseDto;
+import angel_bridge.angel_bridge_server.domain.payment.dto.response.*;
 import angel_bridge.angel_bridge_server.domain.payment.entity.TossPayment;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
@@ -46,6 +43,38 @@ public class PaymentService {
         this.memberRepository = memberRepository;
         this.educationRepository = educationRepository;
         this.tossPaymentRepository = tossPaymentRepository;
+    }
+
+    // [POST] 결제 취소
+    @Transactional
+    public void cancelPayment(CancelReasonResponseDto cancelReasonResponseDto, Long enrollmentId) throws Exception {
+
+        // Enrollment 조회
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_EXCEPTION));
+
+        // payment 조회
+        TossPayment payment = tossPaymentRepository.findByEnrollment(enrollment);
+        String paymentKey = payment.getTossPaymentKey();
+
+        String data = webClient.post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/{paymentKey}/cancel")
+                        .build(paymentKey))
+                .bodyValue(cancelReasonResponseDto)
+                .retrieve()
+                .onStatus(status -> status.value() != 200, clientResponse -> {
+                    return Mono.error(new ApplicationException(PAYMENT_API_FAIL));
+                })
+                .bodyToMono(String.class)
+                .block();
+
+        if (data != null) {
+            // 결제 취소 로직 -> enrollment 삭제
+            enrollmentRepository.delete(enrollment);
+        } else {
+            throw new ApplicationException(PAYMENT_API_FAIL);
+        }
     }
 
     // [POST] 결제 승인
@@ -114,6 +143,7 @@ public class PaymentService {
         List<CompletePaymentResponseDto> completePayments = enrollmentRepository.findByMemberAndDeletedAtIsNull(member)
                 .stream()
                 .map(enrollment -> CompletePaymentResponseDto.builder()
+                        .enrollmentId(enrollment.getId())
                         .imageUrl(enrollment.getEducation().getEducationPreImage())
                         .educationName(enrollment.getEducation().getEducationTitle())
                         .price(enrollment.getEducation().getPrice())
@@ -125,6 +155,7 @@ public class PaymentService {
         List<CanceledPaymentResponseDto> canceledPayments = enrollmentRepository.findByMemberAndDeletedAtIsNotNull(member)
                 .stream()
                 .map(enrollment -> CanceledPaymentResponseDto.builder()
+                        .enrollmentId(enrollment.getId())
                         .imageUrl(enrollment.getEducation().getEducationPreImage())
                         .educationName(enrollment.getEducation().getEducationTitle())
                         .price(enrollment.getEducation().getPrice())
