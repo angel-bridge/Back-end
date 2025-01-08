@@ -71,6 +71,7 @@ public class PaymentService {
 
         if (data != null) {
             // 결제 취소 로직 -> enrollment 삭제
+            tossPaymentRepository.delete(payment);
             enrollmentRepository.delete(enrollment);
         } else {
             throw new ApplicationException(PAYMENT_API_FAIL);
