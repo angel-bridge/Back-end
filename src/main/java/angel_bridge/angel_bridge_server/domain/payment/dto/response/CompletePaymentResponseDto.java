@@ -7,6 +7,7 @@ import java.time.OffsetDateTime;
 
 @Builder
 public record CompletePaymentResponseDto(
+        Long enrollmentId,
         String imageUrl,
         String educationName,
         String price,

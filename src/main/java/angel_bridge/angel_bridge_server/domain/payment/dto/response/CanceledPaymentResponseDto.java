@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record CanceledPaymentResponseDto (
+        Long enrollmentId,
         String imageUrl,
         String educationName,
         String price,
