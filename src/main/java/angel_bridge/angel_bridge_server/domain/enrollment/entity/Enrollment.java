@@ -27,9 +27,6 @@ public class Enrollment extends BaseEntity {
     @JoinColumn(name = "education_id")
     private Education education;
 
-    @Column(name = "is_paid")
-    private boolean isPaid;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "enrollment_status")
     private EnrollmentStatus enrollmentStatus;
@@ -38,7 +35,6 @@ public class Enrollment extends BaseEntity {
     public Enrollment(Member member, Education education, boolean isPaid, EnrollmentStatus enrollmentStatus) {
         this.member = member;
         this.education = education;
-        this.isPaid = isPaid;
         this.enrollmentStatus = enrollmentStatus;
     }
 
