@@ -5,7 +5,10 @@ import angel_bridge.angel_bridge_server.domain.enrollment.entity.Enrollment;
 import angel_bridge.angel_bridge_server.domain.enrollment.entity.EnrollmentStatus;
 import angel_bridge.angel_bridge_server.domain.member.entity.Member;
 import angel_bridge.angel_bridge_server.domain.payment.dto.request.ConfirmPaymentRequestDto;
+import angel_bridge.angel_bridge_server.domain.payment.dto.response.CanceledPaymentResponseDto;
+import angel_bridge.angel_bridge_server.domain.payment.dto.response.CompletePaymentResponseDto;
 import angel_bridge.angel_bridge_server.domain.payment.dto.response.ConfirmPaymentResponseDto;
+import angel_bridge.angel_bridge_server.domain.payment.dto.response.PaymentResponseDto;
 import angel_bridge.angel_bridge_server.domain.payment.entity.TossPayment;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
@@ -18,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.*;
 
@@ -43,7 +48,7 @@ public class PaymentService {
         this.tossPaymentRepository = tossPaymentRepository;
     }
 
-    // 결제 승인
+    // [POST] 결제 승인
     @Transactional
     public void confirmPayment(ConfirmPaymentRequestDto confirmPaymentRequestDto, Long memberId, Long educationId) throws Exception {
 
@@ -97,5 +102,39 @@ public class PaymentService {
                 .approvedAt(response.getApprovedAt())
                 .build();
         tossPaymentRepository.save(tossPayment);
+    }
+
+    // [GET] 결제 내역 조회
+    public PaymentResponseDto getPaymentHistory(Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+
+        // 결제 완료 조회
+        List<CompletePaymentResponseDto> completePayments = enrollmentRepository.findByMemberAndDeletedAtIsNull(member)
+                .stream()
+                .map(enrollment -> CompletePaymentResponseDto.builder()
+                        .imageUrl(enrollment.getEducation().getEducationPreImage())
+                        .educationName(enrollment.getEducation().getEducationTitle())
+                        .price(enrollment.getEducation().getPrice())
+                        .approvedAt(enrollment.getCreatedAt())
+                        .build())
+                .toList();
+
+        // 결제 취소 조회
+        List<CanceledPaymentResponseDto> canceledPayments = enrollmentRepository.findByMemberAndDeletedAtIsNotNull(member)
+                .stream()
+                .map(enrollment -> CanceledPaymentResponseDto.builder()
+                        .imageUrl(enrollment.getEducation().getEducationPreImage())
+                        .educationName(enrollment.getEducation().getEducationTitle())
+                        .price(enrollment.getEducation().getPrice())
+                        .canceledAt(enrollment.getDeletedAt())
+                        .build())
+                .toList();
+
+        return PaymentResponseDto.builder()
+                .complete(completePayments)
+                .canceled(canceledPayments)
+                .build();
     }
 }
