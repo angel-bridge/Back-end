@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     Page<Enrollment> findByMemberAndEnrollmentStatusAndDeletedAtIsNull(Member member, EnrollmentStatus enrollmentStatus, Pageable pageable);
@@ -23,4 +25,7 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     @Transactional
     @Query("UPDATE Enrollment e SET e.enrollmentStatus = 'COMPLETED' WHERE e.education.educationEndDate <= CURRENT_DATE AND e.enrollmentStatus = 'IN_PROGRESS'")
     void updateEnrollmentStatusToCompleted();
+
+    List<Enrollment> findByMemberAndDeletedAtIsNull(Member member);
+    List<Enrollment> findByMemberAndDeletedAtIsNotNull(Member member);
 }
