@@ -12,6 +12,7 @@ import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
 import angel_bridge.angel_bridge_server.global.repository.EnrollmentRepository;
 import angel_bridge.angel_bridge_server.global.repository.MemberRepository;
 import angel_bridge.angel_bridge_server.global.repository.TossPaymentRepository;
+import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,18 +32,21 @@ public class PaymentService {
     private final MemberRepository memberRepository;
     private final EducationRepository educationRepository;
     private final TossPaymentRepository tossPaymentRepository;
+    private final ImageService imageService;
 
     @Autowired
     public PaymentService(WebClient.Builder webClientBuilder,
                           EnrollmentRepository enrollmentRepository,
                           MemberRepository memberRepository,
                           EducationRepository educationRepository,
-                          TossPaymentRepository tossPaymentRepository) {
+                          TossPaymentRepository tossPaymentRepository,
+                          ImageService imageService) {
         this.webClient = webClientBuilder.build();
         this.enrollmentRepository = enrollmentRepository;
         this.memberRepository = memberRepository;
         this.educationRepository = educationRepository;
         this.tossPaymentRepository = tossPaymentRepository;
+        this.imageService = imageService;
     }
 
     // [POST] 결제 취소
@@ -145,7 +149,7 @@ public class PaymentService {
                 .stream()
                 .map(enrollment -> CompletePaymentResponseDto.builder()
                         .enrollmentId(enrollment.getId())
-                        .imageUrl(enrollment.getEducation().getEducationPreImage())
+                        .imageUrl(imageService.getImageUrl(enrollment.getEducation().getEducationPreImage()))
                         .educationName(enrollment.getEducation().getEducationTitle())
                         .price(enrollment.getEducation().getPrice())
                         .approvedAt(enrollment.getCreatedAt())
@@ -157,7 +161,7 @@ public class PaymentService {
                 .stream()
                 .map(enrollment -> CanceledPaymentResponseDto.builder()
                         .enrollmentId(enrollment.getId())
-                        .imageUrl(enrollment.getEducation().getEducationPreImage())
+                        .imageUrl(imageService.getImageUrl(enrollment.getEducation().getEducationPreImage()))
                         .educationName(enrollment.getEducation().getEducationTitle())
                         .price(enrollment.getEducation().getPrice())
                         .canceledAt(enrollment.getDeletedAt())
