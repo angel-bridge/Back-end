@@ -43,8 +43,10 @@ public class PaymentController {
 
     @Operation(summary = "결제 내역 조회", description = "결제 내역 조회 API")
     @GetMapping
-    public CommonResponse<PaymentResponseDto> getPaymentHistory(@AuthenticationPrincipal CustomOAuth2User userDetails) {
+    public CommonResponse<PaymentResponseDto> getPaymentHistory(
+            @RequestParam(defaultValue = "1") int page,
+            @AuthenticationPrincipal CustomOAuth2User userDetails) {
 
-        return new CommonResponse<>(paymentService.getPaymentHistory(userDetails.getMemberId()), "결제 내역 조회에 성공하였습니다.");
+        return new CommonResponse<>(paymentService.getPaymentHistory(page, userDetails.getMemberId()), "결제 내역 조회에 성공하였습니다.");
     }
 }
