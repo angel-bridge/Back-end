@@ -2,7 +2,7 @@ package angel_bridge.angel_bridge_server.domain.education.controller;
 
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentDetailResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentListResponseDto;
-import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentPagedResponseDto;
+import angel_bridge.angel_bridge_server.global.common.response.PagedResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.service.AssignmentService;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationDetailResponseDto;
@@ -90,7 +90,7 @@ public class EducationController {
 
     @Operation(summary = "미션 제출 현황 리스트 조회", description = "미션 제출 현황 리스트 조회하는 API")
     @GetMapping("/{educationId}/assignments")
-    public CommonResponse<AssignmentPagedResponseDto<AssignmentListResponseDto>> getAllAssignments(@PathVariable Long educationId, @RequestParam(defaultValue = "1") int page, @AuthenticationPrincipal CustomOAuth2User userDetails) {
+    public CommonResponse<PagedResponseDto<AssignmentListResponseDto>> getAllAssignments(@PathVariable Long educationId, @RequestParam(defaultValue = "1") int page, @AuthenticationPrincipal CustomOAuth2User userDetails) {
 
         Long memberId = userDetails.getMemberId();
 
