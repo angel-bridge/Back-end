@@ -7,6 +7,7 @@ import angel_bridge.angel_bridge_server.domain.member.entity.Member;
 import angel_bridge.angel_bridge_server.domain.payment.dto.request.ConfirmPaymentRequestDto;
 import angel_bridge.angel_bridge_server.domain.payment.dto.response.*;
 import angel_bridge.angel_bridge_server.domain.payment.entity.TossPayment;
+import angel_bridge.angel_bridge_server.global.common.response.PagedResponseDto;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
 import angel_bridge.angel_bridge_server.global.repository.EnrollmentRepository;
@@ -15,13 +16,16 @@ import angel_bridge.angel_bridge_server.global.repository.TossPaymentRepository;
 import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static angel_bridge.angel_bridge_server.global.exception.ExceptionCode.*;
@@ -141,42 +145,28 @@ public class PaymentService {
     }
 
     // [GET] 결제 내역 조회
-    public PaymentResponseDto getPaymentHistory(int page, Long memberId) {
+    public PagedResponseDto<PaymentResponseDto> getPaymentHistory(int page, Long memberId) {
 
         if (page == 0)
             throw new ApplicationException(BAD_REQUEST_ERROR);
-        Pageable pageable = PageRequest.of(page - 1, 4);
+        Pageable pageable = PageRequest.of(page - 1, 4, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
-        // 결제 완료 조회
-        List<CompletePaymentResponseDto> completePayments = enrollmentRepository.findByMemberAndDeletedAtIsNull(member, pageable)
-                .stream()
-                .map(enrollment -> CompletePaymentResponseDto.builder()
-                        .enrollmentId(enrollment.getId())
-                        .imageUrl(imageService.getImageUrl(enrollment.getEducation().getEducationPreImage()))
-                        .educationName(enrollment.getEducation().getEducationTitle())
-                        .price(enrollment.getEducation().getPrice())
-                        .approvedAt(enrollment.getCreatedAt())
-                        .build())
-                .toList();
-
-        // 결제 취소 조회
-        List<CanceledPaymentResponseDto> canceledPayments = enrollmentRepository.findByMemberAndDeletedAtIsNotNull(member, pageable)
-                .stream()
-                .map(enrollment -> CanceledPaymentResponseDto.builder()
-                        .enrollmentId(enrollment.getId())
-                        .imageUrl(imageService.getImageUrl(enrollment.getEducation().getEducationPreImage()))
-                        .educationName(enrollment.getEducation().getEducationTitle())
-                        .price(enrollment.getEducation().getPrice())
-                        .canceledAt(enrollment.getDeletedAt())
-                        .build())
-                .toList();
-
-        return PaymentResponseDto.builder()
-                .complete(completePayments)
-                .canceled(canceledPayments)
-                .build();
+        Page<PaymentResponseDto> paymentHistoryPage = enrollmentRepository.findByMember(member, pageable)
+                .map(enrollment -> {
+                    String status = (enrollment.getDeletedAt() == null) ? "결제 완료" : "결제 취소";
+                    LocalDateTime date = (enrollment.getDeletedAt() == null) ? enrollment.getCreatedAt() : enrollment.getDeletedAt();
+                    return PaymentResponseDto.builder()
+                            .enrollmentId(enrollment.getId())
+                            .imageUrl(imageService.getImageUrl(enrollment.getEducation().getEducationPreImage()))
+                            .educationName(enrollment.getEducation().getEducationTitle())
+                            .price(enrollment.getEducation().getPrice().toString())
+                            .date(date)
+                            .status(status)
+                            .build();
+                });
+        return PagedResponseDto.from(paymentHistoryPage);
     }
 }

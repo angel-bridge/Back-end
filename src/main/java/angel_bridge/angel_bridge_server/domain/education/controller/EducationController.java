@@ -2,7 +2,7 @@ package angel_bridge.angel_bridge_server.domain.education.controller;
 
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentDetailResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentListResponseDto;
-import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentPagedResponseDto;
+import angel_bridge.angel_bridge_server.global.common.response.PagedResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.dto.response.AssignmentResponseDto;
 import angel_bridge.angel_bridge_server.domain.assignment.service.AssignmentService;
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationDetailResponseDto;
@@ -40,21 +40,21 @@ public class EducationController {
 
     @Operation(summary = "전체 프로그램 조회", description = "전체 프로그램 조회하는 API")
     @GetMapping
-    public CommonResponse<List<EducationResponseDto>> getAllProgram(@RequestParam(defaultValue = "1") int page) {
+    public CommonResponse<PagedResponseDto<EducationResponseDto>> getAllProgram(@RequestParam(defaultValue = "1") int page) {
 
         return new CommonResponse<>(educationService.getAllProgram(page), "전체 프로그램 조회에 성공하였습니다.");
     }
 
     @Operation(summary = "모집 중인 전체 프로그램 조회", description = "모집 중인 전체 프로그램 조회하는 API")
     @GetMapping("/ongoing")
-    public CommonResponse<List<EducationResponseDto>> getAllOngoingProgram(@RequestParam(defaultValue = "1") int page) {
+    public CommonResponse<PagedResponseDto<EducationResponseDto>> getAllOngoingProgram(@RequestParam(defaultValue = "1") int page) {
 
         return new CommonResponse<>(educationService.getAllOngoingProgram(page), "모집 중인 전체 프로그램 조회에 성공하였습니다.");
     }
 
     @Operation(summary = "모집 예정인 전체 프로그램 조회", description = "모집 예정인 전체 프로그램 조회하는 API")
     @GetMapping("/upcoming")
-    public CommonResponse<List<EducationResponseDto>> getAllUpcomingProgram(@RequestParam(defaultValue = "1") int page) {
+    public CommonResponse<PagedResponseDto<EducationResponseDto>> getAllUpcomingProgram(@RequestParam(defaultValue = "1") int page) {
 
         return new CommonResponse<>(educationService.getAllUpcomingProgram(page), "모집 예정인 전체 프로그램 조회에 성공하였습니다.");
     }
@@ -90,7 +90,7 @@ public class EducationController {
 
     @Operation(summary = "미션 제출 현황 리스트 조회", description = "미션 제출 현황 리스트 조회하는 API")
     @GetMapping("/{educationId}/assignments")
-    public CommonResponse<AssignmentPagedResponseDto<AssignmentListResponseDto>> getAllAssignments(@PathVariable Long educationId, @RequestParam(defaultValue = "1") int page, @AuthenticationPrincipal CustomOAuth2User userDetails) {
+    public CommonResponse<PagedResponseDto<AssignmentListResponseDto>> getAllAssignments(@PathVariable Long educationId, @RequestParam(defaultValue = "1") int page, @AuthenticationPrincipal CustomOAuth2User userDetails) {
 
         Long memberId = userDetails.getMemberId();
 
