@@ -194,17 +194,6 @@ public class EducationService {
                 new PageImpl<>(content, pageable, educationPage.getTotalElements())
         );
     }
-//    public List<EducationResponseDto> getAllOngoingProgram(int page) {
-//
-//        if (page == 0)
-//            throw new ApplicationException(BAD_REQUEST_ERROR);
-//        Pageable pageable = PageRequest.of(page - 1, 12);
-//
-//        return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.ONGOING, pageable)
-//                .map(education -> EducationResponseDto.from(
-//                        education, imageService.getImageUrl(education.getEducationPreImage())))
-//                .stream().toList();
-//    }
 
     // [GET] 일반 사용자 모집 예정인 전체 프로그램 조회
     public PagedResponseDto<EducationResponseDto> getAllUpcomingProgram(int page) {
@@ -229,17 +218,6 @@ public class EducationService {
                 new PageImpl<>(content, pageable, educationPage.getTotalElements())
         );
     }
-//    public List<EducationResponseDto> getAllUpcomingProgram(int page) {
-//
-//        if (page == 0)
-//            throw new ApplicationException(BAD_REQUEST_ERROR);
-//        Pageable pageable = PageRequest.of(page - 1, 12);
-//
-//        return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.UPCOMING, pageable)
-//                .map(education -> EducationResponseDto.from(
-//                        education, imageService.getImageUrl(education.getEducationPreImage())))
-//                .stream().toList();
-//    }
 
     // [GET] 일반 사용자 프로그램 상세 페이지 조회
     public EducationDetailResponseDto getEducationDetail(Long educationId) {
