@@ -24,4 +24,11 @@ public class BannerController {
 
         return new CommonResponse<>(bannerService.getBanner(), "메인 페이지의 배너 이미지 조회에 성공하였습니다.");
     }
+
+    @Operation(summary = "교육 페이지 배너 이미지 조회", description = "하나의 배너 이미지를 조회하는 API")
+    @GetMapping("/education")
+    public CommonResponse<BannerResponseDto> registerEducationBanner() {
+
+        return new CommonResponse<>(bannerService.getEducationBanner(), "교육페이지의 배너 이미지 조회에 성공하였습니다.");
+    }
 }

@@ -118,4 +118,12 @@ public class BannerService {
                 .map(banner -> BannerResponseDto.from(imageService.getImageUrl(banner.getBannerImage())))
                 .toList();
     }
+
+    // [GET] 일반 사용자 교육 페이지 배너 조회
+    public BannerResponseDto getEducationBanner() {
+
+        return bannerRepository.findByPriorityAndDeletedAtIsNull(4)
+                .map(banner -> BannerResponseDto.from(imageService.getImageUrl(banner.getBannerImage())))
+                .orElse(null);
+    }
 }
