@@ -41,54 +41,6 @@ public class EnrollmentService {
         enrollmentRepository.updateEnrollmentStatusToCompleted();
     }
 
-//    // [GET] 수강 중인 프로그램 조회
-//    public List<EnrollmentResponseDto> getInProgressProgram(int page, Long memberId) {
-//
-//        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-//
-//        if (page == 0)
-//            throw new ApplicationException(BAD_REQUEST_ERROR);
-//        Pageable pageable = PageRequest.of(page - 1, 4);
-//
-//        return enrollmentRepository.findByMemberAndEnrollmentStatusAndDeletedAtIsNull(member, EnrollmentStatus.IN_PROGRESS, pageable)
-//                .map(enrollment -> EnrollmentResponseDto.from(
-//                        enrollment, imageService.getImageUrl(enrollment.getEducation().getEducationPreImage())))
-//                .stream().toList();
-//    }
-//
-//    // [GET] 수강 예정인 프로그램 조회
-//    public List<EnrollmentResponseDto> getScheduledProgram(int page, Long memberId) {
-//
-//        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-//
-//        if (page == 0)
-//            throw new ApplicationException(BAD_REQUEST_ERROR);
-//        Pageable pageable = PageRequest.of(page - 1, 4);
-//
-//        return enrollmentRepository.findByMemberAndEnrollmentStatusAndDeletedAtIsNull(member, EnrollmentStatus.SCHEDULED, pageable)
-//                .map(enrollment -> EnrollmentResponseDto.from(
-//                        enrollment, imageService.getImageUrl(enrollment.getEducation().getEducationPreImage())))
-//                .stream().toList();
-//    }
-//
-//    // [GET] 수강 완료인 프로그램 조회
-//    public List<EnrollmentResponseDto> getCompletedProgram(int page, Long memberId) {
-//
-//        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-//
-//        if (page == 0)
-//            throw new ApplicationException(BAD_REQUEST_ERROR);
-//        Pageable pageable = PageRequest.of(page - 1, 4);
-//
-//        return enrollmentRepository.findByMemberAndEnrollmentStatusAndDeletedAtIsNull(member, EnrollmentStatus.COMPLETED, pageable)
-//                .map(enrollment -> EnrollmentResponseDto.from(
-//                        enrollment, imageService.getImageUrl(enrollment.getEducation().getEducationPreImage())))
-//                .stream().toList();
-//    }
-
     // [GET] 수강 중인 프로그램 조회
     public PagedResponseDto<EnrollmentResponseDto> getInProgressProgram(int page, Long memberId) {
 
