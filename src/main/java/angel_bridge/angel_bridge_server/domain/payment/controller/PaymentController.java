@@ -5,6 +5,7 @@ import angel_bridge.angel_bridge_server.domain.payment.dto.response.CancelPaymen
 import angel_bridge.angel_bridge_server.domain.payment.dto.response.PaymentResponseDto;
 import angel_bridge.angel_bridge_server.domain.payment.service.PaymentService;
 import angel_bridge.angel_bridge_server.global.common.response.CommonResponse;
+import angel_bridge.angel_bridge_server.global.common.response.PagedResponseDto;
 import angel_bridge.angel_bridge_server.global.oauth2.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,7 +44,7 @@ public class PaymentController {
 
     @Operation(summary = "결제 내역 조회", description = "결제 내역 조회 API")
     @GetMapping
-    public CommonResponse<PaymentResponseDto> getPaymentHistory(
+    public CommonResponse<PagedResponseDto<PaymentResponseDto>> getPaymentHistory(
             @RequestParam(defaultValue = "1") int page,
             @AuthenticationPrincipal CustomOAuth2User userDetails) {
 

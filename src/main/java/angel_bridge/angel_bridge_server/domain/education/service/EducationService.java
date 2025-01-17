@@ -6,11 +6,14 @@ import angel_bridge.angel_bridge_server.domain.education.dto.response.AdminEduca
 import angel_bridge.angel_bridge_server.domain.education.dto.response.EducationResponseDto;
 import angel_bridge.angel_bridge_server.domain.education.entity.Education;
 import angel_bridge.angel_bridge_server.domain.education.entity.RecruitmentStatus;
+import angel_bridge.angel_bridge_server.global.common.response.PagedResponseDto;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
 import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -147,42 +150,73 @@ public class EducationService {
     }
 
     // [GET] 일반 사용자 전체 프로그램 조회
-    public List<EducationResponseDto> getAllProgram(int page) {
+    public PagedResponseDto<EducationResponseDto> getAllProgram(int page) {
 
         if (page == 0)
             throw new ApplicationException(BAD_REQUEST_ERROR);
         Pageable pageable = PageRequest.of(page - 1, 12);
 
-        return educationRepository.findAllActive(pageable)
+        // 페이지 조회
+        Page<Education> educationPage = educationRepository.findAllActive(pageable);
+
+        // Education 객체를 EducationResponseDto로 매핑
+        List<EducationResponseDto> content = educationPage.getContent().stream()
                 .map(education -> EducationResponseDto.from(
-                                education, imageService.getImageUrl(education.getEducationPreImage())))
-                .stream().toList();
+                        education, imageService.getImageUrl(education.getEducationPreImage())))
+                .toList();
+
+        // PagedResponseDto로 변환하여 반환
+        return PagedResponseDto.from(
+                new PageImpl<>(content, pageable, educationPage.getTotalElements())
+        );
     }
 
     // [GET] 일반 사용자 모집 중인 전체 프로그램 조회
-    public List<EducationResponseDto> getAllOngoingProgram(int page) {
+    public PagedResponseDto<EducationResponseDto> getAllOngoingProgram(int page) {
 
-        if (page == 0)
+        if (page == 0) {
             throw new ApplicationException(BAD_REQUEST_ERROR);
+        }
+
         Pageable pageable = PageRequest.of(page - 1, 12);
 
-        return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.ONGOING, pageable)
+        // 페이지 조회
+        Page<Education> educationPage = educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.ONGOING, pageable);
+
+        // Education 객체를 EducationResponseDto로 매핑
+        List<EducationResponseDto> content = educationPage.getContent().stream()
                 .map(education -> EducationResponseDto.from(
                         education, imageService.getImageUrl(education.getEducationPreImage())))
-                .stream().toList();
+                .toList();
+
+        // PagedResponseDto로 변환하여 반환
+        return PagedResponseDto.from(
+                new PageImpl<>(content, pageable, educationPage.getTotalElements())
+        );
     }
 
     // [GET] 일반 사용자 모집 예정인 전체 프로그램 조회
-    public List<EducationResponseDto> getAllUpcomingProgram(int page) {
+    public PagedResponseDto<EducationResponseDto> getAllUpcomingProgram(int page) {
 
-        if (page == 0)
+        if (page == 0) {
             throw new ApplicationException(BAD_REQUEST_ERROR);
+        }
+
         Pageable pageable = PageRequest.of(page - 1, 12);
 
-        return educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.UPCOMING, pageable)
+        // 페이지 조회
+        Page<Education> educationPage = educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.UPCOMING, pageable);
+
+        // Education 객체를 EducationResponseDto로 매핑
+        List<EducationResponseDto> content = educationPage.getContent().stream()
                 .map(education -> EducationResponseDto.from(
                         education, imageService.getImageUrl(education.getEducationPreImage())))
-                .stream().toList();
+                .toList();
+
+        // PagedResponseDto로 변환하여 반환
+        return PagedResponseDto.from(
+                new PageImpl<>(content, pageable, educationPage.getTotalElements())
+        );
     }
 
     // [GET] 일반 사용자 프로그램 상세 페이지 조회

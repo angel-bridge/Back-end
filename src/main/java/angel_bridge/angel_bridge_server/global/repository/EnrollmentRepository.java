@@ -26,6 +26,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     @Query("UPDATE Enrollment e SET e.enrollmentStatus = 'COMPLETED' WHERE e.education.educationEndDate <= CURRENT_DATE AND e.enrollmentStatus = 'IN_PROGRESS'")
     void updateEnrollmentStatusToCompleted();
 
+    Page<Enrollment> findByMember(Member member, Pageable pageable);
+
     Page<Enrollment> findByMemberAndDeletedAtIsNull(Member member, Pageable pageable);
 
     Page<Enrollment> findByMemberAndDeletedAtIsNotNull(Member member, Pageable pageable);

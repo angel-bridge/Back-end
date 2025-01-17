@@ -9,6 +9,7 @@ import angel_bridge.angel_bridge_server.domain.member.entity.Member;
 import angel_bridge.angel_bridge_server.domain.submission.dto.request.SubmissionRequestDto;
 import angel_bridge.angel_bridge_server.domain.submission.entity.AttendanceStatus;
 import angel_bridge.angel_bridge_server.domain.submission.entity.Submission;
+import angel_bridge.angel_bridge_server.global.common.response.PagedResponseDto;
 import angel_bridge.angel_bridge_server.global.exception.ApplicationException;
 import angel_bridge.angel_bridge_server.global.repository.AssignmentRepository;
 import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
@@ -193,7 +194,7 @@ public class AssignmentService {
     }
 
     // [GET] 미션 수행 현황 전체 과제 리스트 조회
-    public AssignmentPagedResponseDto<AssignmentListResponseDto> getAllAssignments(Long educationId, int page, Long memberId) {
+    public PagedResponseDto<AssignmentListResponseDto> getAllAssignments(Long educationId, int page, Long memberId) {
 
         if (page == 0)
             throw new ApplicationException(BAD_REQUEST_ERROR);
@@ -210,7 +211,7 @@ public class AssignmentService {
                 })
                 .toList();
 
-        return new AssignmentPagedResponseDto<>(
+        return new PagedResponseDto<>(
                 assignmentPage.getTotalElements(),
                 assignmentPage.getNumber() + 1,
                 assignmentPage.getTotalPages(),
