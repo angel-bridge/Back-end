@@ -13,4 +13,6 @@ public interface BannerRepository extends JpaRepository<Banner, Long> {
 
     @Query("SELECT b FROM Banner b WHERE b.deletedAt IS NULL AND b.isPost = true ORDER BY b.priority ASC")
     List<Banner> findAllActiveBannersSortedByPriority();
+
+    Optional<Banner> findByPriorityAndDeletedAtIsNull(int priority);
 }

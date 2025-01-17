@@ -13,6 +13,9 @@ import java.util.Optional;
 
 public interface EducationRepository extends JpaRepository<Education, Long> {
 
+    @Query("SELECT e FROM Education e WHERE e.deletedAt IS NULL")
+    Page<Education> findAllActive(Pageable pageable);
+
     Optional<Education> findByIdAndDeletedAtIsNull(Long educationId);
 
     @Query("SELECT e FROM Education e WHERE e.recruitmentStatus = :status AND e.deletedAt IS NULL ORDER BY e.recruitmentEndDate ASC")
