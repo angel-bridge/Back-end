@@ -40,21 +40,21 @@ public class EducationController {
 
     @Operation(summary = "전체 프로그램 조회", description = "전체 프로그램 조회하는 API")
     @GetMapping
-    public CommonResponse<List<EducationResponseDto>> getAllProgram(@RequestParam(defaultValue = "1") int page) {
+    public CommonResponse<PagedResponseDto<EducationResponseDto>> getAllProgram(@RequestParam(defaultValue = "1") int page) {
 
         return new CommonResponse<>(educationService.getAllProgram(page), "전체 프로그램 조회에 성공하였습니다.");
     }
 
     @Operation(summary = "모집 중인 전체 프로그램 조회", description = "모집 중인 전체 프로그램 조회하는 API")
     @GetMapping("/ongoing")
-    public CommonResponse<List<EducationResponseDto>> getAllOngoingProgram(@RequestParam(defaultValue = "1") int page) {
+    public CommonResponse<PagedResponseDto<EducationResponseDto>> getAllOngoingProgram(@RequestParam(defaultValue = "1") int page) {
 
         return new CommonResponse<>(educationService.getAllOngoingProgram(page), "모집 중인 전체 프로그램 조회에 성공하였습니다.");
     }
 
     @Operation(summary = "모집 예정인 전체 프로그램 조회", description = "모집 예정인 전체 프로그램 조회하는 API")
     @GetMapping("/upcoming")
-    public CommonResponse<List<EducationResponseDto>> getAllUpcomingProgram(@RequestParam(defaultValue = "1") int page) {
+    public CommonResponse<PagedResponseDto<EducationResponseDto>> getAllUpcomingProgram(@RequestParam(defaultValue = "1") int page) {
 
         return new CommonResponse<>(educationService.getAllUpcomingProgram(page), "모집 예정인 전체 프로그램 조회에 성공하였습니다.");
     }
