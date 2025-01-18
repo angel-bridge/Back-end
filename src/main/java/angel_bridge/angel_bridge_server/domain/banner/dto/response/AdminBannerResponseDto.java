@@ -12,9 +12,7 @@ public record AdminBannerResponseDto(
 
         String name,
 
-        Integer priority,
-
-        Boolean isPost
+        Integer priority
 ) {
     public static AdminBannerResponseDto from(Banner banner) {
 
@@ -23,7 +21,6 @@ public record AdminBannerResponseDto(
                 .imageFile(banner.getBannerImage())
                 .name(banner.getName())
                 .priority(banner.getPriority())
-                .isPost(banner.getIsPost())
                 .build();
     }
 }

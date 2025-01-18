@@ -80,18 +80,6 @@ public class BannerService {
         return AdminBannerResponseDto.from(updateBanner);
     }
 
-    // [PATCH] 어드민 배너 게시 여부 변경
-    @Transactional
-    public AdminBannerResponseDto changeIsPost(Long bannerId) {
-
-        Banner banner = findBannerById(bannerId);
-
-        banner.changeIsPost();
-        Banner updateBanner = bannerRepository.save(banner);
-
-        return AdminBannerResponseDto.from(updateBanner);
-    }
-
     // [DELETE] 어드민 배너 삭제
     @Transactional
     public void deleteBanner(Long bannerId) {
