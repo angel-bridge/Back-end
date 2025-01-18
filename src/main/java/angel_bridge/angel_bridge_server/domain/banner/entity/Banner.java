@@ -29,25 +29,16 @@ public class Banner extends BaseEntity {
     @Column(name = "priority")
     private Integer priority;
 
-    @Column(name = "is_post", nullable = false)
-    private Boolean isPost;
-
-    public void changeIsPost() {
-        this.isPost = !this.isPost;
-    }
-
     public void update(AdminBannerRequestDto request, String file) {
         this.bannerImage = file;
         this.name = request.name();
         this.priority = request.priority();
-        this.isPost = request.isPost();
     }
 
     @Builder
-    public Banner(String bannerImage, String name, Integer priority, Boolean isPost) {
+    public Banner(String bannerImage, String name, Integer priority) {
         this.bannerImage = bannerImage;
         this.name = name;
         this.priority = priority;
-        this.isPost = isPost;
     }
 }
