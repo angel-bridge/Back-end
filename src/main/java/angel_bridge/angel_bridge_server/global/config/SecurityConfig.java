@@ -50,7 +50,8 @@ public class SecurityConfig {
                                 "http://localhost:8080",
                                 "http://localhost:8081",
                                 "http://3.39.14.152:8080",
-                                "http://3.39.14.152:8081"
+                                "http://3.39.14.152:8081",
+                                "https://api.angelbridge.site"
                         ));
                         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
