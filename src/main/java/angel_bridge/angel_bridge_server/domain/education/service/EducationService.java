@@ -12,10 +12,7 @@ import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
 import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -154,7 +151,7 @@ public class EducationService {
 
         if (page == 0)
             throw new ApplicationException(BAD_REQUEST_ERROR);
-        Pageable pageable = PageRequest.of(page - 1, 12);
+        Pageable pageable = PageRequest.of(page - 1, 12, Sort.by(Sort.Direction.ASC, "recruitmentEndDate"));
 
         // 페이지 조회
         Page<Education> educationPage = educationRepository.findAllActive(pageable);
@@ -178,7 +175,7 @@ public class EducationService {
             throw new ApplicationException(BAD_REQUEST_ERROR);
         }
 
-        Pageable pageable = PageRequest.of(page - 1, 12);
+        Pageable pageable = PageRequest.of(page - 1, 12, Sort.by(Sort.Direction.ASC, "recruitmentEndDate"));
 
         // 페이지 조회
         Page<Education> educationPage = educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.ONGOING, pageable);
@@ -202,7 +199,7 @@ public class EducationService {
             throw new ApplicationException(BAD_REQUEST_ERROR);
         }
 
-        Pageable pageable = PageRequest.of(page - 1, 12);
+        Pageable pageable = PageRequest.of(page - 1, 12, Sort.by(Sort.Direction.ASC, "recruitmentEndDate"));
 
         // 페이지 조회
         Page<Education> educationPage = educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.UPCOMING, pageable);
