@@ -1,6 +1,7 @@
 package angel_bridge.angel_bridge_server.domain.payment.controller;
 
 import angel_bridge.angel_bridge_server.domain.payment.dto.request.ConfirmPaymentRequestDto;
+import angel_bridge.angel_bridge_server.domain.payment.dto.request.SaveAmountRequestDto;
 import angel_bridge.angel_bridge_server.domain.payment.dto.response.CancelPaymentRequestDto;
 import angel_bridge.angel_bridge_server.domain.payment.dto.response.PaymentResponseDto;
 import angel_bridge.angel_bridge_server.domain.payment.service.PaymentService;
@@ -9,6 +10,7 @@ import angel_bridge.angel_bridge_server.global.common.response.PagedResponseDto;
 import angel_bridge.angel_bridge_server.global.oauth2.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,22 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
 
     private final PaymentService paymentService;
+
+    @Operation(summary = "결제 정보 저장", description = "결제 정보(orderId, amount)를 세션에 임시 저장하는 API")
+    @PostMapping("/saveAmount")
+    public CommonResponse<Void> saveAmount(HttpSession session, SaveAmountRequestDto saveAmountRequestDto) {
+
+        session.setAttribute(saveAmountRequestDto.orderId(), saveAmountRequestDto.amount());
+        return new CommonResponse<>("결제 정보 저장을 완료했습니다.");
+    }
+
+    @Operation(summary = "결제 정보 검증", description = "결제 정보(orderId, amount)를 검증하는 API")
+    @GetMapping ("/verifyAmount")
+    public CommonResponse<Void> verifyAmount(HttpSession session, SaveAmountRequestDto saveAmountRequestDto) {
+
+        paymentService.verifyAmount(session, saveAmountRequestDto);
+        return new CommonResponse<>("결제 정보 검증을 완료했습니다.");
+    }
 
     @Operation(summary = "결제 승인", description = "결제 승인 API")
     @PostMapping("/confirm/{educationId}")
