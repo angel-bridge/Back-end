@@ -13,10 +13,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -39,6 +40,25 @@ public class AuthController {
         authService.setNewTokens(response, newAccessToken, RefreshTokenCookie);
 
         return new CommonResponse<>("토큰 재발급을 성공하였습니다");
+    }
+
+    @GetMapping("/checkToken")
+    public CommonResponse<String> checkToken(HttpServletRequest request) {
+
+        String refreshToken = Optional.ofNullable(request.getCookies())
+                .map(Arrays::stream) // 쿠키 배열을 스트림으로 변환
+                .orElseGet(Stream::empty) // null인 경우 빈 스트림 반환
+                .filter(cookie -> "refreshToken".equals(cookie.getName())) // refreshToken 이름 필터링
+                .map(Cookie::getValue) // refreshToken 값 추출
+                .findFirst() // 첫 번째 값 반환
+                .orElse(null); // 없으면 null 반환
+
+        // refreshToken 값 반환
+        if (refreshToken != null) {
+            return new CommonResponse<>(refreshToken, "Refresh token found");
+        } else {
+            return new CommonResponse<>(null, "No refresh token found");
+        }
     }
 
     @PostMapping("/signup")
