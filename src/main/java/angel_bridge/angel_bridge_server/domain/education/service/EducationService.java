@@ -13,11 +13,13 @@ import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
+가import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +33,26 @@ public class EducationService {
 
     private final ImageService imageService;
     private final EducationRepository educationRepository;
+
+    // 자정에 recruitment Status 업데이트
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void updateRecruitmentStatus() {
+
+        LocalDate today = LocalDate.now();
+
+        // 모집 예정 상태 업데이트
+        educationRepository.findAllByRecruitmentStartDateAfter(today)
+                .forEach(education -> education.setRecruitmentStatus(RecruitmentStatus.UPCOMING));
+
+        // 모집 중 상태 업데이트
+        educationRepository.findAllByRecruitmentStartDateBeforeAndRecruitmentEndDateAfter(today, today)
+                .forEach(education -> education.setRecruitmentStatus(RecruitmentStatus.ONGOING));
+
+        // 모집 종료 상태 업데이트
+        educationRepository.findAllByRecruitmentEndDateBefore(today)
+                .forEach(education -> education.setRecruitmentStatus(RecruitmentStatus.CLOSED));
+    }
 
     // [GET] 일반 사용자 추천 교육 프로그램 조회
     public List<EducationResponseDto> getRecommendationProgram() {
