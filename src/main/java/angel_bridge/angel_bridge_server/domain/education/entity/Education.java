@@ -59,6 +59,10 @@ public class Education extends BaseEntity {
     @Column(name = "recruitment_status")
     private RecruitmentStatus recruitmentStatus;
 
+    public void setRecruitmentStatus(RecruitmentStatus status) {
+        this.recruitmentStatus = status;
+    }
+
     public void update(AdminEducationRequestDto request, String preFile, String detailFile) {
         this.educationPreImage = preFile;
         this.educationDetailImage = detailFile;
