@@ -1,6 +1,7 @@
 package angel_bridge.angel_bridge_server.domain.member.controller;
 
 import angel_bridge.angel_bridge_server.domain.member.dto.request.AuthRequestDto;
+import angel_bridge.angel_bridge_server.domain.member.dto.request.TokenReissueRequestDto;
 import angel_bridge.angel_bridge_server.domain.member.dto.response.MemberResponseDto;
 import angel_bridge.angel_bridge_server.domain.member.service.AuthService;
 import angel_bridge.angel_bridge_server.global.common.response.CommonResponse;
@@ -29,9 +30,10 @@ public class AuthController {
 
     @PostMapping("/reissue")
     @Operation(summary = "토큰 재발급", description = "토큰 재발급 요청 API")
-    public CommonResponse<Void> reissue(HttpServletRequest request, HttpServletResponse response) {
+    public CommonResponse<Void> reissue(@RequestBody TokenReissueRequestDto requestDto, HttpServletResponse response) {
 
-        String refreshToken = authService.extractRefreshToken(request);
+//        String refreshToken = authService.extractRefreshToken(request);
+        String refreshToken = requestDto.refreshToken();
         authService.validateRefreshToken(refreshToken);
 
         String newAccessToken = authService.reissueAccessToken(refreshToken);
