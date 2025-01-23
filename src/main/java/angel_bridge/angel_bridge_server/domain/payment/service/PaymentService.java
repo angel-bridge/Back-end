@@ -61,7 +61,7 @@ public class PaymentService {
     public void verifyAmount(HttpSession session, SaveAmountRequestDto saveAmountRequestDto) {
 
         String amount = (String) session.getAttribute(saveAmountRequestDto.orderId());
-        if(amount == null || !amount.equals(saveAmountRequestDto.amount()))
+        if(amount == null || !amount.equals(String.valueOf(saveAmountRequestDto.amount())))
             throw new ApplicationException(INVALID_PAYMENT_DATA);
 
         // 검증 되었으면 기존 검증 정보 삭제

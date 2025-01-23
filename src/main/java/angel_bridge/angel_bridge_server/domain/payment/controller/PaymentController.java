@@ -25,15 +25,15 @@ public class PaymentController {
 
     @Operation(summary = "결제 정보 저장", description = "결제 정보(orderId, amount)를 세션에 임시 저장하는 API")
     @PostMapping("/saveAmount")
-    public CommonResponse<Void> saveAmount(HttpSession session, SaveAmountRequestDto saveAmountRequestDto) {
+    public CommonResponse<Void> saveAmount(HttpSession session, @RequestBody SaveAmountRequestDto saveAmountRequestDto) {
 
-        session.setAttribute(saveAmountRequestDto.orderId(), saveAmountRequestDto.amount());
+        session.setAttribute(saveAmountRequestDto.orderId(), String.valueOf(saveAmountRequestDto.amount()));
         return new CommonResponse<>("결제 정보 저장을 완료했습니다.");
     }
 
     @Operation(summary = "결제 정보 검증", description = "결제 정보(orderId, amount)를 검증하는 API")
-    @GetMapping ("/verifyAmount")
-    public CommonResponse<Void> verifyAmount(HttpSession session, SaveAmountRequestDto saveAmountRequestDto) {
+    @PostMapping ("/verifyAmount")
+    public CommonResponse<Void> verifyAmount(HttpSession session, @RequestBody SaveAmountRequestDto saveAmountRequestDto) {
 
         paymentService.verifyAmount(session, saveAmountRequestDto);
         return new CommonResponse<>("결제 정보 검증을 완료했습니다.");
