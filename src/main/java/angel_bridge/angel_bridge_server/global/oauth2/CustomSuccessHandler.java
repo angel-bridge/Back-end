@@ -60,6 +60,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setHeader("Access-Control-Expose-Headers", "Authorization");
         response.getWriter().write("{\"result\": \"로그인이 성공적으로 완료되었습니다.\"}");
 
         // TODO: 프론트 배포 시 수정 예정
