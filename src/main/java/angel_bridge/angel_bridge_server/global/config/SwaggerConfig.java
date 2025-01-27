@@ -27,6 +27,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .components(components)
                 .info(apiInfo())
+                .addServersItem(new Server().url("https://api.angelbridge.site").description("Production server"))
                 .addSecurityItem(securityRequirement);
     }
 
