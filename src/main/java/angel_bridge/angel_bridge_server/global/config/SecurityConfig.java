@@ -53,7 +53,8 @@ public class SecurityConfig {
                                 "http://3.39.14.152:8081",
                                 "https://api.angelbridge.site",
                                 "https://www.angelbridge.site",
-                                "https://angelbridge.site"
+                                "https://angelbridge.site",
+                                "https://abc.angelbridge.site"
                         ));
                         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
