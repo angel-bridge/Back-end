@@ -184,11 +184,11 @@ public class AssignmentService {
         Assignment currentAssignment = assignmentRepository.findCurrentAssignmentByEducationId(educationId, LocalDateTime.now())
                 .orElse(null);
 
-        if (currentAssignment == null) {
-            return AssignmentResponseDto.fromClosed(education);
-        }
-
         int performanceRate = calculatePerformanceRate(educationId, memberId);
+
+        if (currentAssignment == null) {
+            return AssignmentResponseDto.fromClosed(education, performanceRate);
+        }
 
         return AssignmentResponseDto.fromOngoing(currentAssignment, performanceRate);
     }
