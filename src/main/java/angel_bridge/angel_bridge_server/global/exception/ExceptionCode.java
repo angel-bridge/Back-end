@@ -57,7 +57,8 @@ public enum ExceptionCode {
     // 6000: payment Error
     PAYMENT_API_FAIL(HttpStatus.BAD_REQUEST, 6001, "결제 api 호출에 실패하였습니다."),
     NOT_FOUND_PAYMENT_METHOD(HttpStatus.NOT_FOUND, 6002, "결제 방법이 유효하지 않습니다."),
-    NOT_FOUND_PAYMENT_STATUS(HttpStatus.NOT_FOUND, 6003, "결제 상태가 유효하지 않습니다.");
+    NOT_FOUND_PAYMENT_STATUS(HttpStatus.NOT_FOUND, 6003, "결제 상태가 유효하지 않습니다."),
+    INVALID_PAYMENT_DATA(HttpStatus.BAD_REQUEST, 6004, "결제 정보가 유효하지 않습니다.");
 
 
     //7000: [임의] Error

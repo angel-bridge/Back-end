@@ -32,7 +32,8 @@ public class ImageService {
      */
     private String changedImageName(String originName) {
         String random = UUID.randomUUID().toString();
-        String extension = originName.substring(originName.lastIndexOf("."));
+        int dotIndex = originName.lastIndexOf(".");
+        String extension = dotIndex == -1 ? "" : originName.substring(dotIndex);
         return random + extension;
     }
 

@@ -8,10 +8,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE Enrollment SET deleted_at = NOW() where enrollment_id = ?")
 public class Enrollment extends BaseEntity {
 
     @Id

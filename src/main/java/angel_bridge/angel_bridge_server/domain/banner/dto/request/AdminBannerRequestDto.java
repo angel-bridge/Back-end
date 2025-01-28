@@ -11,11 +11,7 @@ public record AdminBannerRequestDto(
         String name,
 
         @Schema(description = "배너 게시 순서", example = "1")
-        Integer priority,
-
-        @NotNull
-        @Schema(description = "배너 게시 유무", example = "true")
-        Boolean isPost
+        Integer priority
 ) {
     public Banner toEntity(String file) {
 
@@ -23,7 +19,6 @@ public record AdminBannerRequestDto(
                 .bannerImage(file)
                 .name(this.name)
                 .priority(this.priority)
-                .isPost(this.isPost)
                 .build();
     }
 }
