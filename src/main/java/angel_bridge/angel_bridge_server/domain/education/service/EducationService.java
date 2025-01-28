@@ -125,14 +125,14 @@ public class EducationService {
             // 기존 이미지 삭제 후 새로운 이미지 저장
             if (preImage != null && !preImage.isEmpty()) {
                 if (preFile != null && !preFile.isEmpty()) {
-                    imageService.deleteImage(preFile);
+//                    imageService.deleteImage(preFile);
                 }
 
                 preFile = imageService.uploadImage(preImage);
             }
             if (detailImage != null && !detailImage.isEmpty()) {
                 if (detailFile != null && !detailFile.isEmpty()) {
-                    imageService.deleteImage(detailFile);
+//                    imageService.deleteImage(detailFile);
                 }
 
                 detailFile = imageService.uploadImage(detailImage);
