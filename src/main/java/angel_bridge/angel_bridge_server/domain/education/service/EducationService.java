@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -173,20 +174,35 @@ public class EducationService {
 
         if (page == 0)
             throw new ApplicationException(BAD_REQUEST_ERROR);
-        Pageable pageable = PageRequest.of(page - 1, 12, Sort.by(Sort.Direction.ASC, "recruitmentEndDate"));
 
-        // 페이지 조회
-        Page<Education> educationPage = educationRepository.findAllActive(pageable);
+        // 모집 마감이 아닌 데이터와 모집 마감 데이터 모두 조회
+        List<Education> activeEducations = educationRepository.findAllActiveAndNotClosed();
+        List<Education> closedEducations = educationRepository.findAllClosed();
 
-        // Education 객체를 EducationResponseDto로 매핑
-        List<EducationResponseDto> content = educationPage.getContent().stream()
+        // 모집 중 데이터와 마감 데이터 병합
+        List<Education> allEducations = new ArrayList<>();
+        allEducations.addAll(activeEducations);
+        allEducations.addAll(closedEducations);
+
+        // 전체 데이터를 EducationResponseDto로 매핑
+        List<EducationResponseDto> allContent = allEducations.stream()
                 .map(education -> EducationResponseDto.from(
                         education, imageService.getImageUrl(education.getEducationPreImage())))
                 .toList();
 
+        // 페이지네이션 처리
+        int pageSize = 12;
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, allContent.size());
+
+        if (start >= allContent.size())
+            throw new ApplicationException(BAD_REQUEST_ERROR);
+
+        List<EducationResponseDto> pagedContent = allContent.subList(start, end);
+
         // PagedResponseDto로 변환하여 반환
         return PagedResponseDto.from(
-                new PageImpl<>(content, pageable, educationPage.getTotalElements())
+                new PageImpl<>(pagedContent, PageRequest.of(page - 1, pageSize), allContent.size())
         );
     }
 

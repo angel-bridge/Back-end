@@ -18,6 +18,12 @@ public interface EducationRepository extends JpaRepository<Education, Long> {
     List<Education> findAllByRecruitmentStartDateBeforeAndRecruitmentEndDateAfter(LocalDate startDate, LocalDate endDate);
     List<Education> findAllByRecruitmentEndDateBefore(LocalDate date);
 
+    @Query("SELECT e FROM Education e WHERE e.deletedAt IS NULL AND e.recruitmentStatus != 'CLOSED'")
+    List<Education> findAllActiveAndNotClosed();
+
+    @Query("SELECT e FROM Education e WHERE e.deletedAt IS NULL AND e.recruitmentStatus = 'CLOSED'")
+    List<Education> findAllClosed();
+
     @Query("SELECT e FROM Education e WHERE e.deletedAt IS NULL")
     Page<Education> findAllActive(Pageable pageable);
 
