@@ -48,10 +48,11 @@ public record AssignmentResponseDto(
                 .build();
     }
 
-    public static AssignmentResponseDto fromClosed(Education education) {
+    public static AssignmentResponseDto fromClosed(Education education, int performanceRate) {
         return AssignmentResponseDto.builder()
                 .educationId(education.getId())
                 .educationTitle(education.getEducationTitle())
+                .performanceRate(performanceRate)
                 .noticeLink(education.getNoticeLink())
                 .methodLink(education.getMethodLink())
                 .isFinished(true)
