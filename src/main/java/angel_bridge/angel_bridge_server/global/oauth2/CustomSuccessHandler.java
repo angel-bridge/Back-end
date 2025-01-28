@@ -65,7 +65,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // TODO: 프론트 배포 시 수정 예정
         // 로그인 성공 시 이동 경로 지정
-        response.sendRedirect("https://abc.angelbridge.site");
+        response.sendRedirect("https://www.angelbridge.site");
     }
 
     // 프론트에 전달할 방식 : 쿠키 방식
