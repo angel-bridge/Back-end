@@ -39,7 +39,7 @@ spring:
       client:
         registration:
           kakao:
-            redirect-uri: http://3.39.14.152:8080/login/oauth2/code/kakao
+            redirect-uri: https://api.angelbridge.site/login/oauth2/code/kakao
 
 server:
   port: 8080
@@ -58,7 +58,7 @@ spring:
       client:
         registration:
           kakao:
-            redirect-uri: http://3.39.14.152:8081/login/oauth2/code/kakao
+            redirect-uri: https://api.angelbridge.site/login/oauth2/code/kakao
 
 server:
   port: 8081
@@ -77,7 +77,7 @@ spring:
       fail-on-empty-beans: false
   servlet:
     multipart:
-      max-file-size: 5MB
+      max-file-size: 10MB
       max-request-size: 10MB
 
   security:
@@ -98,6 +98,10 @@ spring:
             tokenUri: https://kauth.kakao.com/oauth/token
             userInfoUri: https://kapi.kakao.com/v2/user/me
             userNameAttribute: id
+
+server:
+  tomcat:
+    max-http-form-post-size: 10MB
 
 logging.level:
   org.hibernate.SQL: debug

@@ -10,10 +10,7 @@ import angel_bridge.angel_bridge_server.global.repository.EnrollmentRepository;
 import angel_bridge.angel_bridge_server.global.repository.MemberRepository;
 import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +48,7 @@ public class EnrollmentService {
             throw new ApplicationException(BAD_REQUEST_ERROR);
         }
 
-        Pageable pageable = PageRequest.of(page - 1, 4);
+        Pageable pageable = PageRequest.of(page - 1, 4, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Page<Enrollment> enrollmentPage = enrollmentRepository.findByMemberAndEnrollmentStatusAndDeletedAtIsNull(member, EnrollmentStatus.IN_PROGRESS, pageable);
 
@@ -75,7 +72,7 @@ public class EnrollmentService {
             throw new ApplicationException(BAD_REQUEST_ERROR);
         }
 
-        Pageable pageable = PageRequest.of(page - 1, 4);
+        Pageable pageable = PageRequest.of(page - 1, 4, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Page<Enrollment> enrollmentPage = enrollmentRepository.findByMemberAndEnrollmentStatusAndDeletedAtIsNull(member, EnrollmentStatus.SCHEDULED, pageable);
 
@@ -99,7 +96,7 @@ public class EnrollmentService {
             throw new ApplicationException(BAD_REQUEST_ERROR);
         }
 
-        Pageable pageable = PageRequest.of(page - 1, 4);
+        Pageable pageable = PageRequest.of(page - 1, 4, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Page<Enrollment> enrollmentPage = enrollmentRepository.findByMemberAndEnrollmentStatusAndDeletedAtIsNull(member, EnrollmentStatus.COMPLETED, pageable);
 

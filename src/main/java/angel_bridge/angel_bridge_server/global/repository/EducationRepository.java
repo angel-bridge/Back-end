@@ -8,10 +8,21 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface EducationRepository extends JpaRepository<Education, Long> {
+
+    List<Education> findAllByRecruitmentStartDateAfter(LocalDate date);
+    List<Education> findAllByRecruitmentStartDateBeforeAndRecruitmentEndDateAfter(LocalDate startDate, LocalDate endDate);
+    List<Education> findAllByRecruitmentEndDateBefore(LocalDate date);
+
+    @Query("SELECT e FROM Education e WHERE e.deletedAt IS NULL AND e.recruitmentStatus != 'CLOSED'")
+    List<Education> findAllActiveAndNotClosed();
+
+    @Query("SELECT e FROM Education e WHERE e.deletedAt IS NULL AND e.recruitmentStatus = 'CLOSED'")
+    List<Education> findAllClosed();
 
     @Query("SELECT e FROM Education e WHERE e.deletedAt IS NULL")
     Page<Education> findAllActive(Pageable pageable);

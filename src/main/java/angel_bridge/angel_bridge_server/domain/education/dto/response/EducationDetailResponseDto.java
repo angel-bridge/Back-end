@@ -4,6 +4,7 @@ import angel_bridge.angel_bridge_server.domain.education.entity.Education;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Builder
@@ -26,8 +27,8 @@ public record EducationDetailResponseDto(
         @Schema(description = "모집 마감일", example = "2025-01-05")
         LocalDate recruitmentEndDate,
 
-        @Schema(description = "가격", example = "119,000원")
-        String price,
+        @Schema(description = "가격", example = "119,000")
+        BigDecimal price,
 
         @Schema(description = "프리뷰 이미지", example = "프리뷰 이미지 url")
         String preFile,
@@ -39,6 +40,9 @@ public record EducationDetailResponseDto(
 
         public static EducationDetailResponseDto from(Education education, String preImage, String detailImage) {
 
+                String priceString = education.getPrice();
+                BigDecimal price = new BigDecimal(priceString.replaceAll("[^0-9]", ""));
+
                 return EducationDetailResponseDto.builder()
                         .title(education.getEducationTitle())
                         .description(education.getEducationDescription())
@@ -46,7 +50,7 @@ public record EducationDetailResponseDto(
                         .educationEndDate(education.getEducationEndDate())
                         .recruitmentStartDate(education.getRecruitmentStartDate())
                         .recruitmentEndDate(education.getRecruitmentEndDate())
-                        .price(education.getPrice())
+                        .price(price)
                         .preFile(preImage)
                         .detailFile(detailImage)
                         .build();

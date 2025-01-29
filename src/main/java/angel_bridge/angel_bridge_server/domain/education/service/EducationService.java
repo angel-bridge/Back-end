@@ -12,15 +12,15 @@ import angel_bridge.angel_bridge_server.global.repository.EducationRepository;
 import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +34,26 @@ public class EducationService {
 
     private final ImageService imageService;
     private final EducationRepository educationRepository;
+
+    // 자정에 recruitment Status 업데이트
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void updateRecruitmentStatus() {
+
+        LocalDate today = LocalDate.now();
+
+        // 모집 예정 상태 업데이트
+        educationRepository.findAllByRecruitmentStartDateAfter(today)
+                .forEach(education -> education.setRecruitmentStatus(RecruitmentStatus.UPCOMING));
+
+        // 모집 중 상태 업데이트
+        educationRepository.findAllByRecruitmentStartDateBeforeAndRecruitmentEndDateAfter(today, today)
+                .forEach(education -> education.setRecruitmentStatus(RecruitmentStatus.ONGOING));
+
+        // 모집 종료 상태 업데이트
+        educationRepository.findAllByRecruitmentEndDateBefore(today)
+                .forEach(education -> education.setRecruitmentStatus(RecruitmentStatus.CLOSED));
+    }
 
     // [GET] 일반 사용자 추천 교육 프로그램 조회
     public List<EducationResponseDto> getRecommendationProgram() {
@@ -106,14 +126,14 @@ public class EducationService {
             // 기존 이미지 삭제 후 새로운 이미지 저장
             if (preImage != null && !preImage.isEmpty()) {
                 if (preFile != null && !preFile.isEmpty()) {
-                    imageService.deleteImage(preFile);
+//                    imageService.deleteImage(preFile);
                 }
 
                 preFile = imageService.uploadImage(preImage);
             }
             if (detailImage != null && !detailImage.isEmpty()) {
                 if (detailFile != null && !detailFile.isEmpty()) {
-                    imageService.deleteImage(detailFile);
+//                    imageService.deleteImage(detailFile);
                 }
 
                 detailFile = imageService.uploadImage(detailImage);
@@ -154,20 +174,35 @@ public class EducationService {
 
         if (page == 0)
             throw new ApplicationException(BAD_REQUEST_ERROR);
-        Pageable pageable = PageRequest.of(page - 1, 12);
 
-        // 페이지 조회
-        Page<Education> educationPage = educationRepository.findAllActive(pageable);
+        // 모집 마감이 아닌 데이터와 모집 마감 데이터 모두 조회
+        List<Education> activeEducations = educationRepository.findAllActiveAndNotClosed();
+        List<Education> closedEducations = educationRepository.findAllClosed();
 
-        // Education 객체를 EducationResponseDto로 매핑
-        List<EducationResponseDto> content = educationPage.getContent().stream()
+        // 모집 중 데이터와 마감 데이터 병합
+        List<Education> allEducations = new ArrayList<>();
+        allEducations.addAll(activeEducations);
+        allEducations.addAll(closedEducations);
+
+        // 전체 데이터를 EducationResponseDto로 매핑
+        List<EducationResponseDto> allContent = allEducations.stream()
                 .map(education -> EducationResponseDto.from(
                         education, imageService.getImageUrl(education.getEducationPreImage())))
                 .toList();
 
+        // 페이지네이션 처리
+        int pageSize = 12;
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, allContent.size());
+
+        if (start >= allContent.size())
+            throw new ApplicationException(BAD_REQUEST_ERROR);
+
+        List<EducationResponseDto> pagedContent = allContent.subList(start, end);
+
         // PagedResponseDto로 변환하여 반환
         return PagedResponseDto.from(
-                new PageImpl<>(content, pageable, educationPage.getTotalElements())
+                new PageImpl<>(pagedContent, PageRequest.of(page - 1, pageSize), allContent.size())
         );
     }
 
@@ -178,7 +213,7 @@ public class EducationService {
             throw new ApplicationException(BAD_REQUEST_ERROR);
         }
 
-        Pageable pageable = PageRequest.of(page - 1, 12);
+        Pageable pageable = PageRequest.of(page - 1, 12, Sort.by(Sort.Direction.ASC, "recruitmentEndDate"));
 
         // 페이지 조회
         Page<Education> educationPage = educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.ONGOING, pageable);
@@ -202,7 +237,7 @@ public class EducationService {
             throw new ApplicationException(BAD_REQUEST_ERROR);
         }
 
-        Pageable pageable = PageRequest.of(page - 1, 12);
+        Pageable pageable = PageRequest.of(page - 1, 12, Sort.by(Sort.Direction.ASC, "recruitmentEndDate"));
 
         // 페이지 조회
         Page<Education> educationPage = educationRepository.findByRecruitmentStatusAndDeletedAtIsNull(RecruitmentStatus.UPCOMING, pageable);

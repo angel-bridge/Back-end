@@ -60,11 +60,12 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setHeader("Access-Control-Expose-Headers", "Authorization");
         response.getWriter().write("{\"result\": \"로그인이 성공적으로 완료되었습니다.\"}");
 
         // TODO: 프론트 배포 시 수정 예정
         // 로그인 성공 시 이동 경로 지정
-        response.sendRedirect("http://3.39.14.152/env");
+        response.sendRedirect("https://www.angelbridge.site");
     }
 
     // 프론트에 전달할 방식 : 쿠키 방식
@@ -73,8 +74,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60 * 60 * 24 * 14);
 
-        // TODO: https로 배포 시 추가 예정
-        //cookie.setSecure(true); // https 통신에서만 가능하게 함
+        cookie.setSecure(true); // https 통신에서만 가능하게 함
 
         cookie.setPath("/");
         cookie.setHttpOnly(true);

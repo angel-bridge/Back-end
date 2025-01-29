@@ -5,6 +5,7 @@ import angel_bridge.angel_bridge_server.domain.enrollment.entity.Enrollment;
 import angel_bridge.angel_bridge_server.domain.enrollment.entity.EnrollmentStatus;
 import angel_bridge.angel_bridge_server.domain.member.entity.Member;
 import angel_bridge.angel_bridge_server.domain.payment.dto.request.ConfirmPaymentRequestDto;
+import angel_bridge.angel_bridge_server.domain.payment.dto.request.SaveAmountRequestDto;
 import angel_bridge.angel_bridge_server.domain.payment.dto.response.*;
 import angel_bridge.angel_bridge_server.domain.payment.entity.TossPayment;
 import angel_bridge.angel_bridge_server.global.common.response.PagedResponseDto;
@@ -15,6 +16,7 @@ import angel_bridge.angel_bridge_server.global.repository.MemberRepository;
 import angel_bridge.angel_bridge_server.global.repository.TossPaymentRepository;
 import angel_bridge.angel_bridge_server.global.s3.service.ImageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -53,6 +55,17 @@ public class PaymentService {
         this.educationRepository = educationRepository;
         this.tossPaymentRepository = tossPaymentRepository;
         this.imageService = imageService;
+    }
+
+    // [GET] 결제 정보 검증
+    public void verifyAmount(HttpSession session, SaveAmountRequestDto saveAmountRequestDto) {
+
+        String amount = (String) session.getAttribute(saveAmountRequestDto.orderId());
+        if(amount == null || !amount.equals(String.valueOf(saveAmountRequestDto.amount())))
+            throw new ApplicationException(INVALID_PAYMENT_DATA);
+
+        // 검증 되었으면 기존 검증 정보 삭제
+        session.removeAttribute(saveAmountRequestDto.orderId());
     }
 
     // [POST] 결제 취소

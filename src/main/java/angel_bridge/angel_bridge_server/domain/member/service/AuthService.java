@@ -105,7 +105,7 @@ public class AuthService {
         cookie.setMaxAge(60 * 60 * 24 * 14);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        // cookie.setSecure(true);
+        cookie.setSecure(true);
 
         return cookie;
     }
