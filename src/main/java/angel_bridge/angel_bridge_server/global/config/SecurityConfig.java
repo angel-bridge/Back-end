@@ -92,12 +92,15 @@ public class SecurityConfig {
                 );
         http
                 .authorizeHttpRequests((auth) -> auth
-                    
-                        // 임시
+
+                        .requestMatchers("/hc", "/env", "/").permitAll()   // 서버 체크
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()  // 스웨거
+                        .requestMatchers("/api/v1/education", "/api/v1/education/*",
+                                "/api/v1/blog/**", "/api/v1/banner", "/api/v1/banner/**", "/api/v1/auth/reissue").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/**").permitAll()
-                        .requestMatchers("/hc", "/env", "/").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/v1/auth/signup", "/api/v1/auth/withdrawal", "/logout", "/api/v1/member",
+                                "/api/v1/education/**", "/api/v1/enrollment/**",
+                                "/api/v1/payments","/api/v1/payments/**").hasRole("USER")
                         .anyRequest().authenticated());
         http
                 .sessionManagement((session) -> session
